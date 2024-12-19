@@ -37,3 +37,13 @@
 6. ✅ Lab : SQL injection UNION attack, retrieving multiple values in a single column
 
    https://portswigger.net/web-security/sql-injection/union-attacks/lab-retrieve-multiple-values-in-single-column
+
+
+
+## Blind SQL injection
+
+### Exploiting blind SQL injection by triggering conditional responses
+
+7. Lab: Blind SQL injection with conditional responses
+
+   https://portswigger.net/web-security/sql-injection/blind/lab-conditional-responses
