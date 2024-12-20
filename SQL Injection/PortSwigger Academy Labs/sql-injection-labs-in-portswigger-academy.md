@@ -44,6 +44,6 @@
 
 ### Exploiting blind SQL injection by triggering conditional responses
 
-7. Lab: Blind SQL injection with conditional responses
+7. ⭐️✅ Lab: Blind SQL injection with conditional responses
 
    https://portswigger.net/web-security/sql-injection/blind/lab-conditional-responses
