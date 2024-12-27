@@ -147,12 +147,18 @@ def get_data_with_binary_search(password_length: int, pattern: str) -> str:
             print(f'Got the password : {data_str}, and its length : {len(data_str)}\n')
     return data_str
 
-# 🎉
+# The password length is : 20
+# Memory usage:            0.027557 MB 
+# Peak memory usage:       0.095459 MB
+# Finished get password length with binary search:  in 39.818222 seconds
 with print_code_snippet_performance('get password length with binary search: '):
     password_length: int = get_length_with_binary_search(pattern='Welcome back')
     print(f'The password length is : {password_length}')
 
-# 🎉
+# The final password is : 1hkebkf648tdu5e8lx0k
+# Memory usage:            0.006935 MB 
+# Peak memory usage:       0.074337 MB
+# Finished get password data with binary search:  in 546.722004 seconds
 with print_code_snippet_performance('get password data with binary search: '):
     password_str: str = get_data_with_binary_search(password_length=password_length, pattern='Welcome back')
     print(f'The final password is : {password_str}')
