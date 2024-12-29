@@ -52,13 +52,22 @@
 
 #### Exploiting blind SQL injection by triggering conditional errors
 
-8. Lab: Blind SQL injection with conditional errors
+8. ✅ Lab: Blind SQL injection with conditional errors
 
    https://portswigger.net/web-security/sql-injection/blind/lab-conditional-errors
 
 #### Extracting sensitive data via verbose SQL error messages
 
-9. Lab: Visible error-based SQL injection
+9. ✅ Lab: Visible error-based SQL injection
 
    https://portswigger.net/web-security/sql-injection/blind/lab-sql-injection-visible-error-based
 
+### Exploiting blind SQL injection by triggering time delays
+
+10. ✅ Lab: Visible error-based SQL injection
+
+    https://portswigger.net/web-security/sql-injection/blind/lab-time-delays
+
+11. Lab: Blind SQL injection with time delays and information retrieval
+
+    https://portswigger.net/web-security/sql-injection/blind/lab-time-delays-info-retrieval
